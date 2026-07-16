@@ -4,6 +4,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+require('./models/User');
+const postRoutes = require('./routes/postRoutes');
+
 const app = express();
 
 app.use(cors());
@@ -13,7 +16,9 @@ app.get('/', (req, res) => {
   res.send('MERN Blog API is running');
 });
 
-const PORT = process.env.PORT || 5000;
+app.use('/api/posts', postRoutes);
+
+const PORT = process.env.PORT || 5001;
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
