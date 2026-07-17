@@ -6,6 +6,7 @@ const cors = require('cors');
 
 require('./models/User');
 const postRoutes = require('./routes/postRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5001;
 
