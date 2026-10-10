@@ -1,0 +1,15 @@
+{
+  "name": "evergreen",
+  "private": true,
+  "description": "A developer blog that knows when its tutorials go stale",
+  "scripts": {
+    "install:all": "npm ci --prefix server && npm ci --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test": "npm test --prefix server",
+    "lint": "npm run lint --prefix client",
+    "build": "npm run build --prefix client",
+    "seed": "npm run seed --prefix server",
+    "migrate": "npm run migrate --prefix server"
+  }
+}

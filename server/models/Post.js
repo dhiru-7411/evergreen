@@ -64,6 +64,7 @@ postSchema.index({ author: 1, createdAt: -1 });
 postSchema.statics.makeExcerpt = (markdown, length = 220) => {
   const text = markdown
     .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/^#{1,6}\s.*$/gm, ' ')
     .replace(/`([^`]*)`/g, '$1')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')

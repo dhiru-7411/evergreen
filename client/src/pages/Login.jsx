@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { errorMessage } from '../api/axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -8,38 +9,56 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       await login(email, password);
-      navigate('/');
+      navigate(location.state?.from || '/', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(errorMessage(err, 'Login failed'));
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="card auth-card">
+      <h1 style={{ fontSize: '1.6rem' }}>Welcome back</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
+        {error && (
+          <div className="alert alert-error" role="alert">
+            {error}
+          </div>
+        )}
+        <label className="field">
+          <span>Email</span>
+          <input
+            className="input"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </label>
+        <label className="field">
+          <span>Password</span>
+          <input
+            className="input"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </label>
+        <button className="btn btn-primary" type="submit">
+          Log in
+        </button>
+        <p className="faint" style={{ margin: 0 }}>
+          New here? <Link to="/register">Create an account</Link>
+        </p>
       </form>
     </div>
   );
