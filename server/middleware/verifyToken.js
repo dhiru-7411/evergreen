@@ -13,9 +13,23 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
+// For public routes that show extra detail to signed-in users.
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    try {
+      req.user = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+    } catch {
+      // Treat a bad token on a public route as anonymous.
+    }
+  }
+  next();
+};
+
 module.exports = verifyToken;
+module.exports.optionalAuth = optionalAuth;
