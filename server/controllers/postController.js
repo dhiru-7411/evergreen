@@ -39,10 +39,16 @@ const createPost = async (req, res) => {
 };
 
 const getAllPosts = async (req, res) => {
-  const { page, limit, status, author } = req.validQuery;
+  const { page, limit, status, author, q } = req.validQuery;
   const filter = {};
   if (status) filter['freshness.status'] = status;
   if (author) filter.author = author;
+  if (q) {
+    // Case-insensitive match on title, excerpt or a declared package. The
+    // input is escaped so it can't be used to inject a regex.
+    const pattern = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    filter.$or = [{ title: pattern }, { excerpt: pattern }, { 'stack.name': pattern }];
+  }
 
   const [items, total] = await Promise.all([
     Post.find(filter)

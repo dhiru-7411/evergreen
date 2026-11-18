@@ -4,6 +4,7 @@ import { SnapshotDiff } from '../components/DiffView';
 import Markdown from '../components/Markdown';
 import { Loading, ErrorBox } from '../components/Status';
 import { formatDate, timeAgo } from '../utils/format';
+import UserLink from '../components/UserLink';
 
 const RevisionDiff = ({ postId, number }) => {
   const { data: current, error } = useFetch(`/posts/${postId}/revisions/${number}`);
@@ -19,7 +20,7 @@ const RevisionDiff = ({ postId, number }) => {
           Revision {current.number}: {current.note}
         </h2>
         <p className="faint" style={{ margin: 0 }}>
-          @{current.editor?.username ?? 'deleted'} · {formatDate(current.createdAt)}
+          <UserLink user={current.editor} /> · {formatDate(current.createdAt)}
           {current.fixRequest && (
             <>
               {' · '}
@@ -72,7 +73,7 @@ const History = () => {
                   <b style={{ fontWeight: 500 }}>{rev.note}</b>
                   <br />
                   <span className="faint">
-                    @{rev.editor?.username ?? 'deleted'} · {timeAgo(rev.createdAt)}
+                    <UserLink user={rev.editor} /> · {timeAgo(rev.createdAt)}
                     {rev.fixRequest && ' · reader fix'}
                   </span>
                 </span>

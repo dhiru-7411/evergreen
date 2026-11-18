@@ -1,8 +1,9 @@
+import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
-import { FreshnessBadge, StackChips } from '../components/Freshness';
+import PostCard from '../components/PostCard';
 import { Loading, ErrorBox, Empty } from '../components/Status';
-import { formatDate, plural } from '../utils/format';
+import { plural } from '../utils/format';
 
 const FILTERS = ['all', 'fresh', 'aging', 'stale', 'untracked'];
 const COLORS = { fresh: 'var(--fresh)', aging: 'var(--aging)', stale: 'var(--stale)', untracked: 'var(--untracked)' };
@@ -19,7 +20,7 @@ const Health = ({ stats }) => {
       <div>
         <div className="health-bar" role="img" aria-label="Posts by freshness">
           {['fresh', 'aging', 'stale', 'untracked'].map(
-            (s) => stats[s] > 0 && <span key={s} style={{ flex: stats[s], background: COLORS[s] }} />
+            (s) => stats[s] > 0 && <span key={s} style={{ flex: stats[s], background: COLORS[s] }} />,
           )}
         </div>
         <div className="legend">
@@ -38,35 +39,37 @@ const Health = ({ stats }) => {
   );
 };
 
-const PostCard = ({ post }) => (
-  <article className="card post-card">
-    <div className="spread">
-      <FreshnessBadge status={post.freshness?.status} score={post.freshness?.score} />
-      <span className="faint">
-        rev {post.revision} · {formatDate(post.createdAt)}
-      </span>
-    </div>
-    <h2>
-      <Link to={`/posts/${post._id}`}>{post.title}</Link>
-    </h2>
-    {post.excerpt && <p>{post.excerpt}</p>}
-    <div className="spread">
-      <StackChips stack={post.stack} packages={post.freshness?.packages} />
-      <span className="faint">by @{post.author?.username ?? 'deleted'}</span>
-    </div>
-  </article>
-);
-
 const Home = () => {
   const [params, setParams] = useSearchParams();
   const status = FILTERS.includes(params.get('status')) ? params.get('status') : 'all';
   const page = Math.max(1, Number(params.get('page')) || 1);
+  const q = params.get('q') ?? '';
+  const [text, setText] = useState(q);
+  const [syncedQ, setSyncedQ] = useState(q);
+  if (q !== syncedQ) {
+    // The URL changed underneath us (back button, logo link): follow it.
+    setSyncedQ(q);
+    setText(q);
+  }
+  const timer = useRef();
 
-  const query = new URLSearchParams({ page, limit: 10, ...(status !== 'all' && { status }) });
+  const query = new URLSearchParams({ page, limit: 10, ...(status !== 'all' && { status }), ...(q && { q }) });
   const { data, loading, error } = useFetch(`/posts?${query}`);
   const { data: stats } = useFetch('/posts/stats');
 
-  const go = (next) => setParams(Object.fromEntries(Object.entries(next).filter(([, v]) => v && v !== 'all' && v !== 1)));
+  const go = (next) =>
+    setParams(Object.fromEntries(Object.entries(next).filter(([, v]) => v && v !== 'all' && v !== 1)));
+
+  // Typing updates the box immediately and the URL (and so the query) once it settles.
+  const onSearch = (e) => {
+    const value = e.target.value;
+    setText(value);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setSyncedQ(value.trim());
+      go({ status, q: value.trim() });
+    }, 300);
+  };
 
   return (
     <>
@@ -80,6 +83,17 @@ const Home = () => {
 
       {stats && <Health stats={stats} />}
 
+      <form className="search" role="search" onSubmit={(e) => e.preventDefault()}>
+        <input
+          className="input"
+          type="search"
+          placeholder="Search posts or packages, e.g. react"
+          aria-label="Search posts"
+          value={text}
+          onChange={onSearch}
+        />
+      </form>
+
       <div className="tabs" role="tablist">
         {FILTERS.map((f) => (
           <button
@@ -87,7 +101,7 @@ const Home = () => {
             role="tab"
             aria-selected={status === f}
             className={`tab ${status === f ? 'active' : ''}`}
-            onClick={() => go({ status: f })}
+            onClick={() => go({ status: f, q })}
           >
             {f[0].toUpperCase() + f.slice(1)}
             {stats && <span className="faint">{f === 'all' ? stats.total : stats[f]}</span>}
@@ -100,7 +114,9 @@ const Home = () => {
       {data &&
         (data.items.length === 0 ? (
           <Empty>
-            {status === 'all' ? (
+            {q ? (
+              `No posts match “${q}”.`
+            ) : status === 'all' ? (
               <>
                 No posts yet. <Link to="/create">Write the first one.</Link>
               </>
@@ -118,7 +134,7 @@ const Home = () => {
 
       {data && data.totalPages > 1 && (
         <nav className="pagination" aria-label="Pagination">
-          <button className="btn btn-sm" disabled={page <= 1} onClick={() => go({ status, page: page - 1 })}>
+          <button className="btn btn-sm" disabled={page <= 1} onClick={() => go({ status, q, page: page - 1 })}>
             ← Newer
           </button>
           <span className="faint">
@@ -127,7 +143,7 @@ const Home = () => {
           <button
             className="btn btn-sm"
             disabled={page >= data.totalPages}
-            onClick={() => go({ status, page: page + 1 })}
+            onClick={() => go({ status, q, page: page + 1 })}
           >
             Older →
           </button>

@@ -8,6 +8,7 @@ Most programming tutorials quietly rot. A post written for React 16 or Express 4
 - **A freshness engine checks npm.** A background job compares each post's stack with the latest published versions and scores it **fresh**, **aging** or **stale**, with exactly which packages drifted and by how much.
 - **Posts are versioned like code.** Every edit is an immutable revision with a change note and a line-by-line diff.
 - **Readers can send fixes.** Spot an outdated post? Propose a change, which works like a pull request for prose. The author reviews the diff, merges it, and you're credited as a contributor.
+- **Search and profiles.** Search by title, text or package name (`react`, `mongoose`…). Every author has a public profile at `/u/:username` with their average freshness score and fixes merged into other people's posts.
 
 ![Home page: freshness health bar and posts tagged fresh, aging and stale](docs/screenshots/home.png)
 
@@ -70,7 +71,7 @@ If someone else saved first, nothing is written and the API returns **409 Confli
 | --- | --- |
 | Frontend | React 19, React Router 7, Vite, react-markdown + highlight.js, jsdiff |
 | Backend | Node 24, Express 5, Mongoose 9, zod, JWT + bcrypt, helmet, express-rate-limit, semver |
-| Testing | `node:test`, supertest, mongodb-memory-server (21 API + unit tests) |
+| Testing | `node:test`, supertest, mongodb-memory-server (25 API + unit tests) |
 | CI | GitHub Actions: server tests, client lint + build |
 
 ## Running locally
@@ -96,13 +97,23 @@ Upgrading a database from the original MERN blog? Run `npm run migrate` once. It
 npm test              # API + unit tests against an in-memory MongoDB
 ```
 
+## Deploying
+
+| Piece | Where | Config |
+| --- | --- | --- |
+| API | [Render](https://render.com) (Blueprint) | [`render.yaml`](render.yaml): set `MONGO_URI` and `CLIENT_URL`; `JWT_SECRET` is generated |
+| Client | [Vercel](https://vercel.com) or Netlify, root `client/` | [`client/vercel.json`](client/vercel.json) / [`client/public/_redirects`](client/public/_redirects) handle SPA routes; set `VITE_API_URL` to `https://<your-api>.onrender.com/api` |
+| Database | MongoDB Atlas free tier | Allow Render's outbound IPs (or `0.0.0.0/0` for a demo) |
+
+After the first deploy, run `npm run seed` locally with `MONGO_URI` pointed at Atlas to load the demo posts.
+
 ## API
 
 | Method | Endpoint | Auth | Description |
 | --- | --- | --- | --- |
 | POST | `/api/auth/register` · `/api/auth/login` | | Get a JWT |
 | GET | `/api/auth/me` | ✓ | Current user |
-| GET | `/api/posts?page&limit&status&author` | | Paginated feed, filter by freshness |
+| GET | `/api/posts?page&limit&status&author&q` | | Paginated feed; filter by freshness, author or search text |
 | GET | `/api/posts/stats` | | Freshness breakdown across the blog |
 | POST | `/api/posts` | ✓ | Create (revision 1) |
 | GET | `/api/posts/:id` | | Post + contributors + open fix count |
@@ -114,6 +125,7 @@ npm test              # API + unit tests against an in-memory MongoDB
 | GET | `/api/fixes/inbox` · `/api/fixes/mine` | ✓ | Fixes to review / fixes you proposed |
 | GET | `/api/fixes/:id` | | Fix + base revision for diffing |
 | POST | `/api/fixes/:id/merge` · `/reject` | author | Review a fix |
+| GET | `/api/users/:username` | | Public profile: post counts by freshness, average score, merged fixes |
 
 ## Roadmap
 

@@ -36,9 +36,9 @@ const Navbar = () => {
               <NavLink to="/create" className={navClass}>
                 Write
               </NavLink>
-              <span className="nav-link hide-sm" style={{ cursor: 'default' }}>
+              <NavLink to={`/u/${user.username}`} className={(a) => `${navClass(a)} hide-sm`}>
                 @{user.username}
-              </span>
+              </NavLink>
               <button className="btn btn-sm btn-ghost" onClick={handleLogout}>
                 Log out
               </button>

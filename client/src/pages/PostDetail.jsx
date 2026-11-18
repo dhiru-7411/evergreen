@@ -7,6 +7,7 @@ import { FreshnessReport, StackChips } from '../components/Freshness';
 import Markdown from '../components/Markdown';
 import { Loading, ErrorBox } from '../components/Status';
 import { formatDate, timeAgo, plural } from '../utils/format';
+import UserLink from '../components/UserLink';
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -52,7 +53,7 @@ const PostDetail = () => {
         <StackChips stack={post.stack} packages={post.freshness?.packages} />
         <h1>{post.title}</h1>
         <p className="byline">
-          By <b>@{post.author?.username ?? 'deleted'}</b> · {formatDate(post.createdAt)}
+          By <UserLink user={post.author} bold /> · {formatDate(post.createdAt)}
           {revised && (
             <>
               {' · '}
@@ -62,7 +63,15 @@ const PostDetail = () => {
             </>
           )}
           {post.contributors?.length > 0 && (
-            <> · with fixes from {post.contributors.map((c) => `@${c.username}`).join(', ')}</>
+            <>
+              {' · with fixes from '}
+              {post.contributors.map((c, i) => (
+                <span key={c._id}>
+                  {i > 0 && ', '}
+                  <UserLink user={c} />
+                </span>
+              ))}
+            </>
           )}
         </p>
       </header>

@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const postRoutes = require('./routes/postRoutes');
 const authRoutes = require('./routes/authRoutes');
 const fixRoutes = require('./routes/fixRoutes');
+const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
@@ -31,6 +32,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/fixes', fixRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

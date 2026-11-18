@@ -9,10 +9,16 @@ Each phase teaches something new and ends with something worth showing.
 - Freshness engine, background job, revisions with optimistic concurrency, fix requests
 - Test suite against in-memory MongoDB, GitHub Actions CI
 
+## ✅ Phase 0.5: Discovery and deploy-readiness
+- Search by title, text or package name (regex-escaped, so user input can't inject patterns)
+- Public profile pages (`/u/:username`) with posts, average freshness score and fixes merged
+- Author names link to profiles everywhere
+- Route-level code splitting: entry bundle 640 KB → 195 KB; markdown + highlight.js load only on post pages
+- Render Blueprint, Vercel/Netlify SPA rewrites
+
 ## Phase 1: Deploy and get real users
 - Deploy: client on Vercel/Netlify, API on Render/Fly/Railway, MongoDB Atlas
 - Seed with real posts you write about what you learn building this
-- Public profile pages (`/@username`) with posts, contributions merged and an average freshness score
 - Slugs instead of ids in URLs; Open Graph tags so links unfurl nicely on LinkedIn
 
 ## Phase 2: Auth done right
@@ -38,7 +44,7 @@ Each phase teaches something new and ends with something worth showing.
 
 ## Phase 6: Performance and production
 - TypeScript across client and server
-- Code-split highlight.js and routes (the bundle is 640 KB today: a good before/after story)
+- Load only the highlight.js languages posts actually use (the Markdown chunk is 323 KB)
 - Redis for the registry cache and rate limits so they survive restarts and scale horizontally
 - Move the freshness job to a proper queue (BullMQ) with retries
 - MongoDB transactions around revision + post writes

@@ -57,6 +57,11 @@ const listPosts = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(10),
   status: z.enum(['fresh', 'aging', 'stale', 'untracked']).optional(),
   author: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid author id').optional(),
+  q: z.string().trim().max(100).optional(),
+});
+
+const username = z.object({
+  username: z.string().trim().min(1).max(30).regex(/^[a-zA-Z0-9_-]+$/, 'Invalid username'),
 });
 
 const proposeFix = z.object({
@@ -86,6 +91,7 @@ module.exports = {
   createPost,
   updatePost,
   listPosts,
+  username,
   proposeFix,
   listFixes,
   mergeFix,

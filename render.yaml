@@ -1,0 +1,19 @@
+# Render Blueprint for the API. Connect the repo in Render → New → Blueprint,
+# then fill in the secrets it prompts for (sync: false).
+services:
+  - type: web
+    name: evergreen-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false # your Vercel/Netlify URL, e.g. https://evergreen.vercel.app

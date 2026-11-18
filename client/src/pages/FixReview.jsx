@@ -5,6 +5,7 @@ import { useFetch } from '../hooks/useFetch';
 import { SnapshotDiff } from '../components/DiffView';
 import { Loading, ErrorBox } from '../components/Status';
 import { formatDate, timeAgo } from '../utils/format';
+import UserLink from '../components/UserLink';
 
 const FixReview = () => {
   const { fixId } = useParams();
@@ -44,8 +45,7 @@ const FixReview = () => {
       <div className="row" style={{ marginBottom: 8 }}>
         <span className={`badge s-${fix.status}`}>{fix.status}</span>
         <span className="faint">
-          proposed by @{fix.proposer?.username ?? 'deleted'} {timeAgo(fix.createdAt)} · based on revision{' '}
-          {fix.baseRevision}
+          proposed by <UserLink user={fix.proposer} /> {timeAgo(fix.createdAt)} · based on revision {fix.baseRevision}
         </span>
       </div>
       <h1 style={{ fontSize: '1.8rem' }}>{fix.note}</h1>
