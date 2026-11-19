@@ -25,12 +25,19 @@ export const AuthProvider = ({ children }) => {
   // A stored token may have expired or belong to a deleted account: confirm it.
   useEffect(() => {
     if (!localStorage.getItem('token')) return;
-    api.get('/auth/me').catch((err) => {
-      if (err.response?.status === 401) {
-        clearSession();
-        setUser(null);
-      }
-    });
+    api
+      .get('/auth/me')
+      .then((res) => {
+        // Pick up changes made since login, such as being made an admin.
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        setUser(res.data.user);
+      })
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          clearSession();
+          setUser(null);
+        }
+      });
   }, []);
 
   const login = async (email, password) => {

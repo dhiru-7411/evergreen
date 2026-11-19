@@ -85,7 +85,30 @@ const rejectFix = z.object({
   reviewNote: z.string().trim().max(280).optional(),
 });
 
+const packageName = z.string().trim().toLowerCase().max(214).regex(PACKAGE_NAME, 'Not a valid npm package name');
+
+const createTopic = z.object({
+  name: z.string().trim().min(2).max(60),
+  summary: z.string().trim().max(400).default(''),
+  packages: z
+    .array(packageName)
+    .min(1, 'Add at least one npm package')
+    .max(5, 'At most 5 packages')
+    .refine((p) => new Set(p).size === p.length, 'Duplicate package'),
+  alternatives: z
+    .array(z.object({ name: packageName, note: z.string().trim().max(200).default('') }))
+    .max(8, 'At most 8 alternatives')
+    .refine((a) => new Set(a.map((x) => x.name)).size === a.length, 'Duplicate alternative')
+    .default([]),
+});
+
+const topicSlug = z.object({
+  slug: z.string().trim().toLowerCase().min(1).max(60).regex(/^[a-z0-9-]+$/, 'Invalid topic'),
+});
+
 module.exports = {
+  createTopic,
+  topicSlug,
   register,
   login,
   createPost,

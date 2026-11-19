@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
+    // Admins can create and remove topics.
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
   },
   {
     timestamps: true,

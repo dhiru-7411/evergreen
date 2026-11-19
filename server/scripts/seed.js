@@ -10,9 +10,68 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const Revision = require('../models/Revision');
 const FixRequest = require('../models/FixRequest');
+const Topic = require('../models/Topic');
+const { refreshTopic } = require('../services/topicService');
 const { refreshPostFreshness } = require('../services/freshnessService');
 
 const DEMO_PASSWORD = 'evergreen-demo';
+
+// Starter topics. Live data (versions, downloads, deprecation) is fetched from
+// npm when seeding and refreshed by the background job afterwards.
+const TOPICS = [
+  {
+    name: 'React',
+    summary: 'The most widely used library for building user interfaces with components.',
+    packages: ['react', 'react-dom'],
+    alternatives: [
+      { name: 'vue', note: 'Pick this if you want a gentler learning curve and templates closer to plain HTML.' },
+      { name: 'svelte', note: 'Pick this if you want less boilerplate and a compiler that ships very little JavaScript.' },
+      { name: 'solid-js', note: 'Pick this if you like JSX but want fine-grained reactivity and top-tier performance.' },
+      { name: 'preact', note: 'Pick this if you want a React-compatible API in about 4 KB.' },
+    ],
+  },
+  {
+    name: 'Express',
+    summary: 'Minimal, unopinionated web framework for building APIs and servers in Node.js.',
+    packages: ['express'],
+    alternatives: [
+      { name: 'fastify', note: 'Pick this for higher throughput and built-in schema validation.' },
+      { name: 'hono', note: 'Pick this if you also target edge runtimes like Cloudflare Workers, Deno or Bun.' },
+      { name: 'koa', note: 'Pick this for a smaller core built around async middleware, from the Express team.' },
+      { name: '@nestjs/core', note: 'Pick this for large teams that want structure, dependency injection and TypeScript first.' },
+    ],
+  },
+  {
+    name: 'Mongoose',
+    summary: 'Schemas, validation and models for working with MongoDB from Node.js.',
+    packages: ['mongoose'],
+    alternatives: [
+      { name: 'mongodb', note: 'Pick this for the official driver with no schema layer and full control.' },
+      { name: 'prisma', note: 'Pick this for type-safe queries and one tool across MongoDB, Postgres and MySQL.' },
+      { name: 'drizzle-orm', note: 'Pick this if you are on a SQL database and want a lightweight, TypeScript-first ORM.' },
+    ],
+  },
+  {
+    name: 'Vite',
+    summary: 'Fast dev server and build tool for modern front-end projects.',
+    packages: ['vite'],
+    alternatives: [
+      { name: 'webpack', note: 'Pick this when maintaining an existing webpack setup or needing its plugin ecosystem.' },
+      { name: '@rsbuild/core', note: 'Pick this for a Rust-powered, webpack-compatible build with very fast builds.' },
+      { name: 'parcel', note: 'Pick this for zero-config bundling of small projects.' },
+    ],
+  },
+  {
+    name: 'Next.js',
+    summary: 'Full-stack React framework with routing, server rendering and server components.',
+    packages: ['next'],
+    alternatives: [
+      { name: 'react-router', note: 'Pick this (framework mode, formerly Remix) for web-standard loaders and actions.' },
+      { name: 'astro', note: 'Pick this for content-heavy sites that ship little JavaScript by default.' },
+      { name: 'nuxt', note: 'Pick this if your team prefers Vue over React.' },
+    ],
+  },
+];
 const MONTH = 30 * 24 * 60 * 60 * 1000;
 
 const POSTS = [
@@ -115,6 +174,20 @@ async function main() {
 
   const author = await upsertUser('demo');
   const reader = await upsertUser('reader');
+  // The demo author can manage topics.
+  await User.updateOne({ _id: author._id }, { role: 'admin' });
+
+  for (const t of TOPICS) {
+    const slug = Topic.slugify(t.name);
+    const topic = await Topic.findOneAndUpdate(
+      { slug },
+      { ...t, slug, createdBy: author._id },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    await refreshTopic(topic);
+    const p = topic.live.packages.find((x) => x.name === t.packages[0]);
+    console.log(`  topic     ${t.name.padEnd(9)} ${p?.found ? `${p.name}@${p.version}` : 'npm unreachable'}`);
+  }
 
   const oldPosts = await Post.find({ author: author._id }).select('_id');
   const ids = oldPosts.map((p) => p._id);
@@ -186,8 +259,8 @@ Express 5 forwards rejected promises to your error handler automatically, so the
 `,
   });
 
-  console.log(`\nSeeded ${created.length} posts and 1 open fix request.`);
-  console.log(`Log in as demo@evergreen.dev / ${DEMO_PASSWORD} (author) or reader@evergreen.dev (reader).`);
+  console.log(`\nSeeded ${TOPICS.length} topics, ${created.length} posts and 1 open fix request.`);
+  console.log(`Log in as demo@evergreen.dev / ${DEMO_PASSWORD} (author + admin) or reader@evergreen.dev (reader).`);
   await mongoose.disconnect();
 }
 

@@ -6,7 +6,7 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-const publicUser = (user) => ({ id: user._id, username: user.username, email: user.email });
+const publicUser = (user) => ({ id: user._id, username: user.username, email: user.email, role: user.role ?? 'user' });
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;

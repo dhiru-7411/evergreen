@@ -32,3 +32,6 @@ export const STATUS_LABEL = {
 
 export const plural = (n, word, many = /(s|x|z|ch|sh)$/.test(word) ? `${word}es` : `${word}s`) =>
   `${n} ${n === 1 ? word : many}`;
+
+const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+export const compactNumber = (n) => (n == null ? '-' : compact.format(n));

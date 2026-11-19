@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const { getLatestVersions } = require('./npmRegistry');
 const { assessPost } = require('./freshness');
+const { refreshDueTopics } = require('./topicService');
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -43,6 +44,8 @@ function startFreshnessJob({ intervalHours = Number(process.env.FRESHNESS_INTERV
     try {
       const count = await refreshDuePosts({ maxAgeMs: intervalHours * HOUR_MS });
       if (count) console.log(`[freshness] re-checked ${count} post(s)`);
+      const topics = await refreshDueTopics();
+      if (topics) console.log(`[topics] refreshed live npm data for ${topics} topic(s)`);
     } catch (err) {
       console.error('[freshness] job failed:', err.message);
     }

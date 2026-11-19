@@ -15,6 +15,9 @@ const FixReview = lazy(() => import('./pages/FixReview'));
 const Inbox = lazy(() => import('./pages/Inbox'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Profile = lazy(() => import('./pages/Profile'));
+const Topics = lazy(() => import('./pages/Topics'));
+const TopicDetail = lazy(() => import('./pages/TopicDetail'));
+const NewTopic = lazy(() => import('./pages/NewTopic'));
 
 const protect = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 
@@ -34,6 +37,9 @@ function App() {
             <Route path="/posts/:id/suggest" element={protect(<SuggestFix />)} />
             <Route path="/fixes/:fixId" element={<FixReview />} />
             <Route path="/u/:username" element={<Profile />} />
+            <Route path="/learn" element={<Topics />} />
+            <Route path="/learn/new" element={protect(<NewTopic />)} />
+            <Route path="/learn/:slug" element={<TopicDetail />} />
             <Route path="/inbox" element={protect(<Inbox />)} />
             <Route path="/create" element={protect(<CreatePost />)} />
             <Route path="*" element={<NotFound />} />

@@ -8,6 +8,7 @@ const postRoutes = require('./routes/postRoutes');
 const authRoutes = require('./routes/authRoutes');
 const fixRoutes = require('./routes/fixRoutes');
 const userRoutes = require('./routes/userRoutes');
+const topicRoutes = require('./routes/topicRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
@@ -33,6 +34,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/fixes', fixRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/topics', topicRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

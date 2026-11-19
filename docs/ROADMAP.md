@@ -16,6 +16,20 @@ Each phase teaches something new and ends with something worth showing.
 - Route-level code splitting: entry bundle 640 KB → 195 KB; markdown + highlight.js load only on post pages
 - Render Blueprint, Vercel/Netlify SPA rewrites
 
+## Direction: learn what's current
+Evergreen is growing from a blog into a place to *learn a technology*: each topic page shows the latest version, the alternatives and why you'd pick them, a step-by-step learning path, and tutorials checked against what's current. The site fills these in automatically from APIs and AI drafting grounded in official sources; admins only choose topics.
+
+## ✅ Topics, step 1: live package data
+- `Topic` model (`/learn/:slug`): main + related npm packages, alternatives with "pick this if…" notes
+- Live data per package from npm (version, downloads, license, links, deprecation) and deps.dev (release date, security advisories); 6h cache, refreshed by the background job and on read, keeps last known data if a source is down
+- Related tutorials ranked freshest first; admin role, `make-admin` script, 5 seeded topics
+
+## Topics, next steps
+- **Learning paths:** ordered steps with prerequisites, each linked to official docs and freshness-checked tutorials; per-user progress
+- **Grounded AI drafting:** Claude API with web search drafts paths, "what's new in vX" and alternatives from official docs and release notes, with citations; regenerated when a major version ships
+- **Auto-suggested alternatives** from npm keywords + download data, explained by Claude
+- **External tutorials:** pull candidates from dev.to and official docs, score their freshness, rank with reader votes
+
 ## Phase 1: Deploy and get real users
 - Deploy: client on Vercel/Netlify, API on Render/Fly/Railway, MongoDB Atlas
 - Seed with real posts you write about what you learn building this

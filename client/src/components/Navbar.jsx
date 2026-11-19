@@ -27,6 +27,9 @@ const Navbar = () => {
           Evergreen
         </Link>
         <div className="nav-links">
+          <NavLink to="/learn" className={navClass}>
+            Learn
+          </NavLink>
           {user ? (
             <>
               <NavLink to="/inbox" className={navClass}>
