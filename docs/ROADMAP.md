@@ -24,8 +24,15 @@ Evergreen is growing from a blog into a place to *learn a technology*: each topi
 - Live data per package from npm (version, downloads, license, links, deprecation) and deps.dev (release date, security advisories); 6h cache, refreshed by the background job and on read, keeps last known data if a source is down
 - Related tutorials ranked freshest first; admin role, `make-admin` script, 5 seeded topics
 
+## ✅ Topics, step 2: sources, scope and community resources
+- Numbered citations on every fact, a Sources list per topic, editor-written text labelled
+- Scope limited to 8 core knowledge areas (`server/config/categories.js`); 9 seeded topics
+- Signed-in users suggest resources; automatic checks (reachable, on-topic, not duplicate, version taught) then human review; reports send published resources back to review
+- Server-side page fetching hardened against SSRF (private IPs, redirects, DNS rebinding, size and time limits)
+
 ## Topics, next steps
 - **Learning paths:** ordered steps with prerequisites, each linked to official docs and freshness-checked tutorials; per-user progress
+- **AI accuracy check on submissions:** Claude compares a suggested page against the official docs for the current version and gives reviewers a list of claims that look wrong
 - **Grounded AI drafting:** Claude API with web search drafts paths, "what's new in vX" and alternatives from official docs and release notes, with citations; regenerated when a major version ships
 - **Auto-suggested alternatives** from npm keywords + download data, explained by Claude
 - **External tutorials:** pull candidates from dev.to and official docs, score their freshness, rank with reader votes

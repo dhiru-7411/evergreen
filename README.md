@@ -8,7 +8,8 @@ Most programming tutorials quietly rot. A post written for React 16 or Express 4
 - **A freshness engine checks npm.** A background job compares each post's stack with the latest published versions and scores it **fresh**, **aging** or **stale**, with exactly which packages drifted and by how much.
 - **Posts are versioned like code.** Every edit is an immutable revision with a change note and a line-by-line diff.
 - **Readers can send fixes.** Spot an outdated post? Propose a change, which works like a pull request for prose. The author reviews the diff, merges it, and you're credited as a contributor.
-- **Learn by topic.** `/learn/react` and friends show the latest version, its release date, weekly downloads, license, deprecation notices and known security advisories, all live from npm and [deps.dev](https://deps.dev). Each topic lists the alternatives worth knowing (with how their usage compares) and every tutorial on the blog that uses it, freshest first.
+- **Learn by topic, with sources.** Evergreen covers the core areas of building software (frontend, backend, full-stack, databases, languages & tooling, testing, mobile, AI apps). Each topic page (`/learn/react`) shows the latest version, release date, weekly downloads, license, deprecation notices and known security advisories, live from npm and [deps.dev](https://deps.dev). Every number carries a numbered citation to its source, and editorial notes are labelled as such.
+- **Community resources, checked.** Anyone with an account can suggest a tutorial, video or doc. The server opens the page (with SSRF protection) and rejects dead links, pages that aren't about the topic and duplicates; it detects which major version the page teaches and flags outdated ones. A reviewer then checks accuracy before it's published, credited to both people. Readers can report a published resource, which sends it back to review.
 - **Search and profiles.** Search by title, text or package name (`react`, `mongoose`…). Every author has a public profile at `/u/:username` with their average freshness score and fixes merged into other people's posts.
 
 ![Home page: freshness health bar and posts tagged fresh, aging and stale](docs/screenshots/home.png)
@@ -132,7 +133,12 @@ After the first deploy, run `npm run seed` locally with `MONGO_URI` pointed at A
 | GET | `/api/topics` | | All topics with live data for their main package |
 | GET | `/api/topics/:slug` | | Topic page: live package data, alternatives, related posts (refreshes if older than 6h) |
 | POST | `/api/topics` | admin | Create from a name, npm packages and alternatives |
-| DELETE | `/api/topics/:slug` | admin | Remove a topic |
+| DELETE | `/api/topics/:slug` | admin | Remove a topic and its resources |
+| GET | `/api/topics/categories` | | The knowledge areas Evergreen covers |
+| POST | `/api/topics/:slug/resources` | ✓ | Suggest a resource; runs reachability, relevance, duplicate and version checks |
+| GET | `/api/resources/review` | admin | Pending resources and reported ones |
+| POST | `/api/resources/:id/approve` · `/reject` | admin | Review a resource (optional `reviewNote`) |
+| POST | `/api/resources/:id/report` | ✓ | Report a problem with a published resource |
 
 ## Roadmap
 

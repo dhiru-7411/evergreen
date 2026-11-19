@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { ErrorBox } from '../components/Status';
+import { useFetch } from '../hooks/useFetch';
 
 const splitPackages = (text) =>
   text
@@ -13,7 +14,10 @@ const splitPackages = (text) =>
 const NewTopic = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { data: categories } = useFetch('/topics/categories');
   const [name, setName] = useState('');
+  const [category, setCategory] = useState('');
+  const [keywords, setKeywords] = useState('');
   const [summary, setSummary] = useState('');
   const [packages, setPackages] = useState('');
   const [alternatives, setAlternatives] = useState([{ name: '', note: '' }]);
@@ -32,7 +36,12 @@ const NewTopic = () => {
     try {
       const res = await api.post('/topics', {
         name,
+        category,
         summary,
+        keywords: keywords
+          .split(',')
+          .map((k) => k.trim())
+          .filter(Boolean),
         packages: splitPackages(packages),
         alternatives: alternatives
           .filter((a) => a.name.trim())
@@ -68,6 +77,23 @@ const NewTopic = () => {
         </label>
 
         <label className="field">
+          <span>Category</span>
+          <select className="input" value={category} onChange={(e) => setCategory(e.target.value)} required>
+            <option value="" disabled>
+              Choose a knowledge area…
+            </option>
+            {categories?.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}: {c.blurb}
+              </option>
+            ))}
+          </select>
+          <span className="hint">
+            Evergreen only covers these core areas, to keep every topic accurate and current.
+          </span>
+        </label>
+
+        <label className="field">
           <span>npm packages</span>
           <input
             className="input mono"
@@ -88,6 +114,20 @@ const NewTopic = () => {
             maxLength={400}
             placeholder="Leave blank to use the package's npm description"
           />
+        </label>
+
+        <label className="field">
+          <span>Keywords (optional)</span>
+          <input
+            className="input"
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
+            placeholder="Claude, Anthropic"
+          />
+          <span className="hint">
+            Comma-separated words that mean a page is about this topic. Used to check community suggestions are
+            relevant.
+          </span>
         </label>
 
         <fieldset className="field alt-editor">

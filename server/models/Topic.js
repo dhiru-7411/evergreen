@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { CATEGORY_IDS } = require('../config/categories');
 
 // Snapshot of one package's live npm data. Kept on the topic so pages still
 // render (with a "last checked" time) if npm is unreachable.
@@ -35,12 +36,16 @@ const topicSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    category: { type: String, enum: CATEGORY_IDS, required: true },
     summary: { type: String, trim: true, default: '' },
     packages: {
       type: [{ type: String, trim: true, lowercase: true }],
       validate: (v) => v.length > 0,
     },
     alternatives: { type: [alternativeSchema], default: [] },
+    // Extra words that mean a page is about this topic ("Claude", "Expo"…),
+    // used when checking community-submitted resources for relevance.
+    keywords: { type: [{ type: String, trim: true }], default: [] },
     live: {
       checkedAt: Date,
       packages: { type: [packageSnapshotSchema], default: [] },
@@ -50,7 +55,7 @@ const topicSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-topicSchema.index({ name: 1 });
+topicSchema.index({ category: 1, name: 1 });
 topicSchema.index({ 'live.checkedAt': 1 });
 
 topicSchema.statics.slugify = (name) =>

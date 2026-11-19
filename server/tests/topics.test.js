@@ -26,6 +26,7 @@ beforeEach(async () => {
 
 const REACT = {
   name: 'React',
+  category: 'frontend',
   summary: 'Components for the web.',
   packages: ['react'],
   alternatives: [
@@ -49,7 +50,7 @@ describe('creating topics', () => {
 
   test('rejects a primary package that npm does not know', async () => {
     const admin = await makeAdmin(await signup('admin'));
-    const res = await createTopic(admin, { name: 'Nope', packages: ['definitely-not-a-real-pkg'] }).expect(422);
+    const res = await createTopic(admin, { name: 'Nope', category: 'frontend', packages: ['definitely-not-a-real-pkg'] }).expect(422);
     assert.match(res.body.message, /Couldn't find/);
   });
 
@@ -57,8 +58,9 @@ describe('creating topics', () => {
     const admin = await makeAdmin(await signup('admin'));
     await createTopic(admin).expect(201);
     await createTopic(admin, { ...REACT, name: 'react' }).expect(409);
-    await createTopic(admin, { name: 'Bad', packages: ['Not A Package!'] }).expect(400);
-    await createTopic(admin, { name: 'Empty', packages: [] }).expect(400);
+    await createTopic(admin, { name: 'Bad', category: 'frontend', packages: ['Not A Package!'] }).expect(400);
+    await createTopic(admin, { name: 'Empty', category: 'frontend', packages: [] }).expect(400);
+    await createTopic(admin, { ...REACT, name: 'Cooking', category: 'cooking' }).expect(400);
   });
 
   test('slugs are URL-friendly', () => {
@@ -80,6 +82,13 @@ describe('topic pages', () => {
     assert.equal(new Date(body.primary.publishedAt).toISOString(), PUBLISHED);
     assert.equal(body.primary.repository, 'https://github.com/example/react');
     assert.equal(body.primary.advisoryCount, 0);
+    assert.equal(body.category.id, 'frontend');
+    // Every fact is cited: npm and deps.dev for each package, plus official docs.
+    const ids = body.sources.map((s) => s.id);
+    for (const id of ['npm:react', 'depsdev:react', 'docs:react', 'repo:react', 'npm:vue', 'depsdev:svelte']) {
+      assert.ok(ids.includes(id), `missing source ${id}`);
+    }
+    assert.equal(body.summarySource, 'editor');
     assert.deepEqual(
       body.alternatives.map((a) => [a.name, a.version, a.note]),
       [
@@ -91,7 +100,7 @@ describe('topic pages', () => {
 
   test('flag deprecated packages', async () => {
     const admin = await makeAdmin(await signup('admin'));
-    await createTopic(admin, { name: 'HTTP clients', packages: ['request'] }).expect(201);
+    await createTopic(admin, { name: 'HTTP clients', category: 'backend', packages: ['request'] }).expect(201);
     const { body } = await request(app).get('/api/topics/http-clients').expect(200);
     assert.match(body.primary.deprecated, /deprecated/);
     assert.equal(body.primary.advisoryCount, 1);

@@ -21,6 +21,7 @@ const DEMO_PASSWORD = 'evergreen-demo';
 const TOPICS = [
   {
     name: 'React',
+    category: 'frontend',
     summary: 'The most widely used library for building user interfaces with components.',
     packages: ['react', 'react-dom'],
     alternatives: [
@@ -32,6 +33,7 @@ const TOPICS = [
   },
   {
     name: 'Express',
+    category: 'backend',
     summary: 'Minimal, unopinionated web framework for building APIs and servers in Node.js.',
     packages: ['express'],
     alternatives: [
@@ -43,6 +45,7 @@ const TOPICS = [
   },
   {
     name: 'Mongoose',
+    category: 'databases',
     summary: 'Schemas, validation and models for working with MongoDB from Node.js.',
     packages: ['mongoose'],
     alternatives: [
@@ -53,6 +56,7 @@ const TOPICS = [
   },
   {
     name: 'Vite',
+    category: 'tooling',
     summary: 'Fast dev server and build tool for modern front-end projects.',
     packages: ['vite'],
     alternatives: [
@@ -63,12 +67,56 @@ const TOPICS = [
   },
   {
     name: 'Next.js',
+    category: 'fullstack',
     summary: 'Full-stack React framework with routing, server rendering and server components.',
     packages: ['next'],
     alternatives: [
       { name: 'react-router', note: 'Pick this (framework mode, formerly Remix) for web-standard loaders and actions.' },
       { name: 'astro', note: 'Pick this for content-heavy sites that ship little JavaScript by default.' },
       { name: 'nuxt', note: 'Pick this if your team prefers Vue over React.' },
+    ],
+  },
+  {
+    name: 'TypeScript',
+    category: 'tooling',
+    summary: 'JavaScript with static types: catches bugs before they run and powers editor tooling.',
+    packages: ['typescript'],
+    alternatives: [
+      { name: 'flow-bin', note: 'Pick this only when maintaining an existing Flow codebase.' },
+    ],
+  },
+  {
+    name: 'Vitest',
+    category: 'testing',
+    summary: 'Fast unit test runner built on Vite, with a Jest-compatible API.',
+    packages: ['vitest'],
+    alternatives: [
+      { name: 'jest', note: 'Pick this for older projects or when a library only documents Jest setup.' },
+      { name: 'mocha', note: 'Pick this for a minimal runner where you choose your own assertion library.' },
+      { name: '@playwright/test', note: 'Pick this for end-to-end tests in real browsers (complements a unit runner).' },
+    ],
+  },
+  {
+    name: 'React Native',
+    category: 'mobile',
+    summary: 'Build native iOS and Android apps with React.',
+    packages: ['react-native', 'expo'],
+    keywords: ['React Native', 'Expo'],
+    alternatives: [
+      { name: '@capacitor/core', note: 'Pick this to wrap an existing web app as a mobile app.' },
+      { name: '@nativescript/core', note: 'Pick this for direct access to native APIs from JavaScript without React.' },
+    ],
+  },
+  {
+    name: 'Building with LLMs',
+    category: 'ai',
+    summary: 'Official SDKs and frameworks for calling large language models from JavaScript.',
+    packages: ['@anthropic-ai/sdk'],
+    keywords: ['Claude', 'Anthropic', 'LLM', 'large language model'],
+    alternatives: [
+      { name: 'openai', note: "Pick this for OpenAI's models." },
+      { name: 'ai', note: 'Pick this (Vercel AI SDK) for one API across many model providers, with React streaming helpers.' },
+      { name: 'langchain', note: 'Pick this for prebuilt chains, retrieval and agent tooling across providers.' },
     ],
   },
 ];
@@ -186,7 +234,7 @@ async function main() {
     );
     await refreshTopic(topic);
     const p = topic.live.packages.find((x) => x.name === t.packages[0]);
-    console.log(`  topic     ${t.name.padEnd(9)} ${p?.found ? `${p.name}@${p.version}` : 'npm unreachable'}`);
+    console.log(`  topic     ${t.name.padEnd(18)} ${p?.found ? `${p.name}@${p.version}` : 'npm unreachable'}`);
   }
 
   const oldPosts = await Post.find({ author: author._id }).select('_id');

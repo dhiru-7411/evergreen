@@ -1,5 +1,6 @@
 const { z } = require('zod');
 const semver = require('semver');
+const { CATEGORY_IDS } = require('../config/categories');
 
 // npm's naming rules, including scoped packages like @tanstack/react-query.
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
@@ -89,6 +90,7 @@ const packageName = z.string().trim().toLowerCase().max(214).regex(PACKAGE_NAME,
 
 const createTopic = z.object({
   name: z.string().trim().min(2).max(60),
+  category: z.enum(CATEGORY_IDS, 'Pick one of the listed categories'),
   summary: z.string().trim().max(400).default(''),
   packages: z
     .array(packageName)
@@ -100,14 +102,40 @@ const createTopic = z.object({
     .max(8, 'At most 8 alternatives')
     .refine((a) => new Set(a.map((x) => x.name)).size === a.length, 'Duplicate alternative')
     .default([]),
+  keywords: z.array(z.string().trim().min(2).max(40)).max(10, 'At most 10 keywords').default([]),
 });
 
 const topicSlug = z.object({
   slug: z.string().trim().toLowerCase().min(1).max(60).regex(/^[a-z0-9-]+$/, 'Invalid topic'),
 });
 
+const submitResource = z.object({
+  url: z
+    .string()
+    .trim()
+    .max(2000)
+    .refine((u) => URL.canParse(u) && /^https?:$/.test(new URL(u).protocol), 'Use a full http(s) link'),
+  title: z.string().trim().min(5).max(160),
+  kind: z.enum(['tutorial', 'official-docs', 'video', 'course', 'article']).default('tutorial'),
+  description: z.string().trim().max(280).default(''),
+});
+
+const reviewResource = z.object({
+  reviewNote: z.string().trim().max(280).default(''),
+});
+
+const reportResource = z.object({
+  reason: z.string().trim().min(10, 'Tell us what is wrong (at least 10 characters)').max(280),
+});
+
+const objectId = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid id') });
+
 module.exports = {
   createTopic,
+  submitResource,
+  reviewResource,
+  reportResource,
+  objectId,
   topicSlug,
   register,
   login,

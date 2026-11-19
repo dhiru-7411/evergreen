@@ -13,4 +13,7 @@ const authLimiter = rateLimit({ ...common, windowMs: 15 * 60 * 1000, limit: 20 }
 // Freshness rechecks call the npm registry; keep them cheap.
 const recheckLimiter = rateLimit({ ...common, windowMs: 60 * 1000, limit: 10 });
 
-module.exports = { authLimiter, recheckLimiter };
+// Submitting a resource makes the server fetch a third-party page.
+const submitLimiter = rateLimit({ ...common, windowMs: 60 * 60 * 1000, limit: 15 });
+
+module.exports = { authLimiter, recheckLimiter, submitLimiter };
