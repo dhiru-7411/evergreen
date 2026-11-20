@@ -5,6 +5,8 @@ const requireVerified = require('../middleware/requireVerified');
 const validate = require('../middleware/validate');
 const { recheckLimiter } = require('../middleware/rateLimits');
 const schemas = require('../validators/schemas');
+const Post = require('../models/Post');
+const { OBJECT_ID } = require('../utils/slugify');
 const {
   createPost,
   getAllPosts,
@@ -17,6 +19,15 @@ const {
   getRevision,
 } = require('../controllers/postController');
 const { proposeFix, listFixesForPost } = require('../controllers/fixController');
+
+// Every /:id route accepts the readable slug too.
+router.param('id', async (req, res, next, value) => {
+  if (OBJECT_ID.test(value)) return next();
+  const post = await Post.findOne({ slug: String(value).toLowerCase() }).select('_id');
+  if (!post) return res.status(404).json({ message: 'Post not found' });
+  req.params.id = String(post._id);
+  next();
+});
 
 router.get('/', validate(schemas.listPosts, 'query'), getAllPosts);
 router.post('/', verifyToken, requireVerified, validate(schemas.createPost), createPost);

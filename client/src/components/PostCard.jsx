@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FreshnessBadge, StackChips } from './Freshness';
 import UserLink from './UserLink';
-import { formatDate } from '../utils/format';
+import { formatDate, postPath } from '../utils/format';
 
 const PostCard = ({ post, showAuthor = true }) => (
   <article className="card post-card">
@@ -12,7 +12,7 @@ const PostCard = ({ post, showAuthor = true }) => (
       </span>
     </div>
     <h2>
-      <Link to={`/posts/${post._id}`}>{post.title}</Link>
+      <Link to={postPath(post)}>{post.title}</Link>
     </h2>
     {post.excerpt && <p>{post.excerpt}</p>}
     <div className="spread">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -15,6 +15,11 @@ const PostDetail = () => {
   const { user } = useAuth();
   const { data: post, loading, error, reload } = useFetch(`/posts/${id}`);
   const [actionError, setActionError] = useState('');
+
+  // Opened via an old id link: show the readable address instead.
+  useEffect(() => {
+    if (post?.slug && id !== post.slug) navigate(`/posts/${post.slug}`, { replace: true });
+  }, [post, id, navigate]);
   const [rechecking, setRechecking] = useState(false);
 
   const handleDelete = async () => {

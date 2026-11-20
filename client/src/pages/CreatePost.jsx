@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import PostForm from '../components/PostForm';
+import { postPath } from '../utils/format';
 
 const CreatePost = () => {
   const [error, setError] = useState('');
@@ -11,7 +12,7 @@ const CreatePost = () => {
     setError('');
     try {
       const response = await api.post('/posts', values);
-      navigate(`/posts/${response.data._id}`);
+      navigate(postPath(response.data));
     } catch (err) {
       setError(errorMessage(err, 'Failed to create post'));
     }

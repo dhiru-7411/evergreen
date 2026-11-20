@@ -4,7 +4,7 @@ import api, { errorMessage } from '../api/axios';
 import { useFetch } from '../hooks/useFetch';
 import { SnapshotDiff } from '../components/DiffView';
 import { Loading, ErrorBox } from '../components/Status';
-import { formatDate, timeAgo } from '../utils/format';
+import { formatDate, timeAgo, postPath } from '../utils/format';
 import UserLink from '../components/UserLink';
 
 const FixReview = () => {
@@ -24,7 +24,7 @@ const FixReview = () => {
     setActionError('');
     try {
       await api.post(`/fixes/${fixId}/${action}`, { ...body, ...(reviewNote.trim() && { reviewNote }) });
-      if (action === 'merge') navigate(`/posts/${fix.post._id}`);
+      if (action === 'merge') navigate(postPath(fix.post));
       else reload();
     } catch (err) {
       setActionError(errorMessage(err));
@@ -39,7 +39,7 @@ const FixReview = () => {
   return (
     <>
       <p className="faint">
-        <Link to={`/posts/${fix.post._id}`}>← {fix.post.title}</Link>
+        <Link to={postPath(fix.post)}>← {fix.post.title}</Link>
       </p>
 
       <div className="row" style={{ marginBottom: 8 }}>
