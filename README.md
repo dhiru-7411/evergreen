@@ -1,84 +1,99 @@
 # 🌲 Evergreen
 
-**A developer blog that knows when its tutorials go stale.**
+**Learn what's current.** Evergreen is a learning site for the core skills of building software. Every topic shows the latest version, the alternatives worth knowing, a step-by-step learning path built from the official docs, and tutorials checked against what's current today, with every fact linked to its source.
 
-Most programming tutorials quietly rot. A post written for React 16 or Express 4 still ranks on Google years later, and readers only find out it's outdated after the code breaks. Evergreen makes that visible:
+**Live:** [evergreen-indol.vercel.app](https://evergreen-indol.vercel.app) · [![CI](https://github.com/dhiru-7411/evergreen/actions/workflows/ci.yml/badge.svg)](https://github.com/dhiru-7411/evergreen/actions/workflows/ci.yml) [![Live site check](https://github.com/dhiru-7411/evergreen/actions/workflows/live-check.yml/badge.svg)](https://github.com/dhiru-7411/evergreen/actions/workflows/live-check.yml)
 
-- **Every post declares its stack.** For example `express@4.17` and `mongoose@5.13`.
-- **A freshness engine checks npm.** A background job compares each post's stack with the latest published versions and scores it **fresh**, **aging** or **stale**, with exactly which packages drifted and by how much.
-- **Posts are versioned like code.** Every edit is an immutable revision with a change note and a line-by-line diff.
-- **Readers can send fixes.** Spot an outdated post? Propose a change, which works like a pull request for prose. The author reviews the diff, merges it, and you're credited as a contributor.
-- **Learn by topic, with sources.** Evergreen covers the core areas of building software (frontend, backend, full-stack, databases, languages & tooling, testing, mobile, AI apps). Each topic page (`/learn/react`) shows the latest version, release date, weekly downloads, license, deprecation notices and known security advisories, live from npm and [deps.dev](https://deps.dev). Every number carries a numbered citation to its source, and editorial notes are labelled as such.
-- **Community resources, checked.** Anyone with an account can suggest a tutorial, video or doc. The server opens the page (with SSRF protection) and rejects dead links, pages that aren't about the topic and duplicates; it detects which major version the page teaches and flags outdated ones. A reviewer then checks accuracy before it's published, credited to both people. Readers can report a published resource, which sends it back to review.
-- **Search and profiles.** Search by title, text or package name (`react`, `mongoose`…). Every author has a public profile at `/u/:username` with their average freshness score and fixes merged into other people's posts.
+> The first visit can take up to a minute while the free-tier API server wakes up.
 
-![Home page: freshness health bar and posts tagged fresh, aging and stale](docs/screenshots/home.png)
+![The Learn page: topics grouped into core areas, each with its latest version and weekly downloads](docs/screenshots/learn.jpg)
 
-| Stale post with freshness report | Reviewing a reader's fix |
+## Why
+
+Programming tutorials quietly go out of date. A guide written for React 16 or Express 4 still ranks on search engines years later, and learners only find out when the code breaks. Evergreen makes "is this still current?" the first thing you see:
+
+- **Live facts, cited.** Versions, release dates, downloads, licenses, deprecation notices and security advisories come straight from npm and [deps.dev](https://deps.dev), refreshed automatically, and each number links to its source.
+- **Paths built from official docs.** Each topic's learning path cites only official documentation pages, and every link is opened and checked before it can be published.
+- **Tutorials scored for freshness.** Every post declares the packages it uses and is scored **fresh**, **aging** or **stale** against the latest releases, with exactly which packages drifted.
+
+## Features
+
+**Learn by topic**
+- Topics in 8 core areas: frontend, backend, full-stack, databases, languages & tooling, testing, mobile, and AI apps
+- Live package data with numbered citations; editor-written text labelled as such
+- Alternatives with "pick this if…" notes and how their usage compares
+- Learning paths: ordered steps with goals, prerequisites, time estimates and "what changed recently" notes that warn against outdated tutorials; an "outdated" banner appears when a new major version ships
+
+**Tutorials that stay honest**
+- Freshness scoring against npm, re-checked by a background job
+- Posts are versioned like code: every edit is a revision with a note and a line-by-line diff
+- Readers propose fixes, like pull requests for prose; authors review the diff and merge, and contributors are credited
+
+**Community, with checks**
+- Suggest a resource: the server opens the page, rejects dead links, off-topic pages and duplicates, detects which major version it teaches, then an editor reviews it
+- Request a topic and upvote others; duplicates and topics that already exist are caught
+- Report problems with published resources, which sends them back to review
+
+**Accounts**
+- httpOnly cookie sessions with refresh-token rotation and stolen-token detection
+- Email verification, password reset and change, a list of signed-in devices, and log out everywhere
+
+| Topic page | Dark mode |
 | --- | --- |
-| ![Stale post](docs/screenshots/stale-post.png) | ![Fix review diff](docs/screenshots/fix-review.png) |
+| ![React topic: latest version, release date, downloads and license, each with a citation](docs/screenshots/topic.jpg) | ![The same topic page in dark mode](docs/screenshots/topic-dark.jpg) |
 
-| Revision history | Dark mode |
+| Alternatives with sources | A stale tutorial |
 | --- | --- |
-| ![History](docs/screenshots/history.png) | ![Dark mode](docs/screenshots/home-dark.png) |
+| ![Alternatives to React with notes, downloads relative to React, and release dates](docs/screenshots/alternatives.jpg) | ![Freshness report: written for Express 4.17 and Mongoose 5.13, now 5.3.0 and 9.12.2](docs/screenshots/stale-post.jpg) |
+
+| Reviewing a reader's fix | Revision history | On a phone |
+| --- | --- | --- |
+| ![Side-by-side diff of a proposed fix](docs/screenshots/fix-review.png) | ![Timeline of revisions with notes](docs/screenshots/history.png) | ![React topic at phone width](docs/screenshots/mobile.jpg) |
 
 ## How it works
 
 ```mermaid
 flowchart LR
-  subgraph Client [React 19 + Vite]
-    UI[Pages: feed, post, history, fix review, inbox]
-  end
-  subgraph API [Express 5]
-    R[Routes + zod validation] --> C[Controllers]
-    C --> RV[commitRevision<br/>optimistic concurrency]
-    C --> FS[Freshness service]
-    JOB[Background job<br/>every 12h] --> FS
-    FS --> SC[Pure scoring engine]
-    FS --> NPM[npm registry client<br/>cached, batched]
-  end
-  UI -- JWT --> R
-  NPM -- HTTPS --> REG[(registry.npmjs.org)]
-  C --> DB[(MongoDB<br/>Post · Revision · FixRequest · User)]
+  B[Browser] -->|pages| V[Vercel<br/>React 19 + Vite]
+  B -->|/api, same site| V
+  V -->|rewrite /api, sitemap,<br/>link-preview bots| R[Render<br/>Express 5 API]
+  R --> DB[(MongoDB Atlas)]
+  R -->|versions, downloads,<br/>deprecations| NPM[npm registry]
+  R -->|release dates,<br/>advisories| DD[deps.dev]
+  R -->|verification,<br/>password reset| M[SMTP: Brevo]
+  GH[GitHub Actions] -->|tests on every push;<br/>daily live check| B
 ```
 
-### Freshness scoring
+The browser only ever talks to the site's own address. Vercel forwards `/api` to the Render API, which keeps login cookies first-party (no third-party-cookie problems) and makes cross-site request forgery much harder.
 
-Each package gets "breaking releases behind" (major versions, or minor versions for `0.x` packages, where semver treats minors as breaking):
+## Engineering highlights
 
-| Behind | Package score | Status |
-| --- | --- | --- |
-| 0 | 100 | fresh |
-| 1 | 60 | aging |
-| 2 | 20 | stale |
-| 3+ | 0 | stale |
-
-A post is only as current as its **most outdated** dependency. Content not revised for 12 or 24 months loses another 10 or 20 points. Overall: ≥ 80 fresh, ≥ 50 aging, otherwise stale. Posts with no declared stack are **untracked**. The logic lives in [`server/services/freshness.js`](server/services/freshness.js): pure functions, unit-tested.
-
-The job resolves every package across all due posts in **one batched pass** with an in-memory TTL cache, so 500 posts that mention `react` cost one registry request, not 500.
-
-### Revisions and conflicts
-
-Edits and merged fixes go through [`commitRevision`](server/services/revisions.js), which updates the post with a compare-and-swap on the revision number:
-
-```js
-Post.findOneAndUpdate({ _id, revision: baseRevision }, { $set: changes, $inc: { revision: 1 } })
-```
-
-If someone else saved first, nothing is written and the API returns **409 Conflict**, the same idea as a git merge conflict. A fix proposed against an older revision is flagged as outdated, and the author can still choose to merge it anyway.
+| Problem | Approach |
+| --- | --- |
+| **Is a tutorial still current?** | Each package gets "breaking releases behind" (majors, or minors for `0.x`): 0 → fresh, 1 → aging, 2+ → stale. A post is only as current as its most outdated dependency, and content not revised for 12 or 24 months loses points. Pure, unit-tested functions in [`server/services/freshness.js`](server/services/freshness.js). The job resolves all packages across all due posts in one batched, cached pass, so 500 posts that mention `react` cost one registry request. |
+| **Two people edit at once** | Edits and merged fixes use compare-and-swap on the revision number; if someone saved first, nothing is written and the API returns **409 Conflict**, like a git merge conflict ([`revisions.js`](server/services/revisions.js)). |
+| **Fetching user-submitted URLs safely** | Server-side fetching is protected against SSRF: private, loopback and cloud-metadata addresses are blocked inside the socket's DNS lookup (no DNS-rebinding window), redirects are re-validated, and size and time are capped ([`safeFetch.js`](server/services/safeFetch.js)). |
+| **Is a page relevant, and which version does it teach?** | Word-bounded topic matching (generic names like `sdk` ignored) and version extraction from text like `react@18`, `Next.js 15`, `v19` ([`resourceChecker.js`](server/services/resourceChecker.js)). |
+| **Made-up documentation links** | Every learning-path source is opened before import. Some docs sites answer HTTP 200 for missing pages, so the importer first requests a fake URL in the same folder and rejects pages that look like that "not found" page ([`importPath.js`](server/scripts/importPath.js)). |
+| **Stolen login tokens** | 15-minute access tokens plus 30-day refresh tokens in httpOnly, Secure, SameSite cookies; refresh tokens are stored hashed and rotate on every use, and replaying an old one revokes the session ([`sessions.js`](server/services/sessions.js)). |
+| **Link previews from a single-page app** | Preview bots don't run JavaScript, so Vercel routes LinkedIn, Slack, WhatsApp, X and Discord to `/api/og`, which renders HTML-escaped Open Graph tags from the database ([`pageMeta.js`](server/services/pageMeta.js)). |
+| **Accessibility** | Audited with axe-core (WCAG 2.2 AA) on 17 pages in both themes at desktop and phone width: 0 violations. Skip link, keyboard-scrollable code, 24px tap targets. |
+| **Staying online on free tiers** | A daily GitHub Actions check loads the site and its API, keeping the database from being paused for inactivity, and emails the owner if anything is down. |
 
 ## Tech stack
 
 | Layer | Tools |
 | --- | --- |
-| Frontend | React 19, React Router 7, Vite, react-markdown + highlight.js, jsdiff |
-| Backend | Node 24, Express 5, Mongoose 9, zod, JWT + bcrypt, helmet, express-rate-limit, semver |
-| Testing | `node:test`, supertest, mongodb-memory-server (25 API + unit tests) |
-| CI | GitHub Actions: server tests, client lint + build |
+| Frontend | React 19, React Router 7, Vite 8, react-markdown + highlight.js, jsdiff |
+| Backend | Node 24, Express 5, Mongoose 9, zod, bcrypt, jsonwebtoken, helmet, express-rate-limit, nodemailer, semver |
+| Data sources | npm registry and downloads API, deps.dev |
+| Testing | `node:test`, supertest, mongodb-memory-server (100 API and unit tests); axe-core for accessibility |
+| Hosting | Vercel (site), Render (API), MongoDB Atlas (database), Brevo (email) |
+| CI | GitHub Actions: tests, lint and build on every push; daily live-site check |
 
 ## Running locally
 
-Requires Node 20+ and a MongoDB connection string (a free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster works).
+Requires Node 22+ and a MongoDB connection string (a free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster works).
 
 ```bash
 npm run install:all
@@ -86,61 +101,32 @@ npm run install:all
 cp server/.env.example server/.env    # fill in MONGO_URI and JWT_SECRET
 cp client/.env.example client/.env    # nothing to fill in; the dev server proxies /api
 
-npm run seed          # optional: demo posts with mixed freshness + an open fix
+npm run seed          # demo topics, posts and accounts (refuses to run in production)
 npm run dev:server    # http://localhost:5001
 npm run dev:client    # http://localhost:5173
+
+npm test              # API and unit tests against an in-memory MongoDB
 ```
 
-Demo logins after seeding: `demo@evergreen.dev` (author and admin) and `reader@evergreen.dev` (reader), both with password `evergreen-demo`.
+After seeding, sign in locally as `demo@evergreen.dev` (admin) or `reader@evergreen.dev`, both with password `evergreen-demo`. These accounts exist only in local databases.
 
-Only admins can create or delete topics. Promote an account with `npm run make-admin --prefix server -- <username>` (add `--revoke` to undo).
+Useful scripts (run in `server/`):
 
-Upgrading a database from the original MERN blog? Run `npm run migrate` once. It backfills revision history for existing posts.
+| Command | What it does |
+| --- | --- |
+| `npm run make-admin -- <username>` | Lets a user manage topics, review resources and publish learning paths (`--revoke` to undo) |
+| `npm run import-path -- <slug>` or `-- --all` | Imports learning paths from `content/paths/*.json` as drafts, opening every source link first |
+| `npm run migrate` | Upgrades older data (revision history, readable post URLs) |
 
-```bash
-npm test              # API + unit tests against an in-memory MongoDB
-```
+Without email settings, verification and reset emails are printed to the server log and email verification isn't enforced. Learning paths can optionally be drafted with the Claude API (`ANTHROPIC_API_KEY`); without a key the site works fully and paths are written by hand in `content/paths/`.
 
 ## Deploying
 
 | Piece | Where | Config |
 | --- | --- | --- |
-| API | [Render](https://render.com) (Blueprint) | [`render.yaml`](render.yaml): set `MONGO_URI` and `CLIENT_URL`; `JWT_SECRET` is generated |
-| Client | [Vercel](https://vercel.com) or Netlify, root `client/` | Replace `YOUR-API.onrender.com` in [`client/vercel.json`](client/vercel.json) (or [`client/public/_redirects`](client/public/_redirects)) with your API's host. The site calls `/api` on its own domain and the host forwards it to Render, so login cookies are first-party. Leave `VITE_API_URL` unset. |
-| Link previews | Vercel only | `client/vercel.json` sends link-preview bots (LinkedIn, Slack, WhatsApp, X, Discord...) to `/api/og`, which returns the page's title, description and image. Netlify can't route by user agent, so previews there show the site defaults. Set `APP_URL` on the API to your public site address. |
-| Database | MongoDB Atlas free tier | Allow Render's outbound IPs (or `0.0.0.0/0` for a demo) |
+| API | [Render](https://render.com) Blueprint | [`render.yaml`](render.yaml) (free plan). Set `MONGO_URI`, `CLIENT_URL` (the site's address) and optionally the `SMTP_*` and `MAIL_FROM` email settings; `JWT_SECRET` is generated. |
+| Site | [Vercel](https://vercel.com), root directory `client/` | [`client/vercel.json`](client/vercel.json) forwards `/api`, `/sitemap.xml`, `/robots.txt` and link-preview bots to the API host. No environment variables needed. |
+| Database | MongoDB Atlas free tier | Allow `0.0.0.0/0` (Render's free instances have no fixed IP); the password still protects it. |
+| Email | Any SMTP provider, e.g. Brevo's free tier | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` on the API |
 
-After the first deploy, run `npm run seed` locally with `MONGO_URI` pointed at Atlas to load the demo posts.
-
-## API
-
-| Method | Endpoint | Auth | Description |
-| --- | --- | --- | --- |
-| POST | `/api/auth/register` · `/api/auth/login` | | Get a JWT |
-| GET | `/api/auth/me` | ✓ | Current user |
-| GET | `/api/posts?page&limit&status&author&q` | | Paginated feed; filter by freshness, author or search text |
-| GET | `/api/posts/stats` | | Freshness breakdown across the blog |
-| POST | `/api/posts` | ✓ | Create (revision 1) |
-| GET | `/api/posts/:id` | | Post + contributors + open fix count |
-| PATCH | `/api/posts/:id` | author | New revision; needs `note` and `baseRevision` |
-| DELETE | `/api/posts/:id` | author | Deletes post, revisions and fixes |
-| POST | `/api/posts/:id/freshness` | ✓ | Re-check against npm now |
-| GET | `/api/posts/:id/revisions[/:number]` | | History / one snapshot |
-| GET · POST | `/api/posts/:id/fixes` | POST ✓ | List / propose a fix |
-| GET | `/api/fixes/inbox` · `/api/fixes/mine` | ✓ | Fixes to review / fixes you proposed |
-| GET | `/api/fixes/:id` | | Fix + base revision for diffing |
-| POST | `/api/fixes/:id/merge` · `/reject` | author | Review a fix |
-| GET | `/api/users/:username` | | Public profile: post counts by freshness, average score, merged fixes |
-| GET | `/api/topics` | | All topics with live data for their main package |
-| GET | `/api/topics/:slug` | | Topic page: live package data, alternatives, related posts (refreshes if older than 6h) |
-| POST | `/api/topics` | admin | Create from a name, npm packages and alternatives |
-| DELETE | `/api/topics/:slug` | admin | Remove a topic and its resources |
-| GET | `/api/topics/categories` | | The knowledge areas Evergreen covers |
-| POST | `/api/topics/:slug/resources` | ✓ | Suggest a resource; runs reachability, relevance, duplicate and version checks |
-| GET | `/api/resources/review` | admin | Pending resources and reported ones |
-| POST | `/api/resources/:id/approve` · `/reject` | admin | Review a resource (optional `reviewNote`) |
-| POST | `/api/resources/:id/report` | ✓ | Report a problem with a published resource |
-
-## Roadmap
-
-See [docs/ROADMAP.md](docs/ROADMAP.md).
+See [docs/API.md](docs/API.md) for every endpoint and [docs/ROADMAP.md](docs/ROADMAP.md) for what's next.
