@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="container nav-inner">
         <Link to="/" className="brand">
           <img src="/favicon.svg" alt="" />
-          Evergreen
+          <span className="brand-name">Evergreen</span>
         </Link>
         <div className="nav-links">
           <NavLink to="/learn" className={navClass}>
@@ -42,10 +42,11 @@ const Navbar = () => {
               <NavLink to={`/u/${user.username}`} className={(a) => `${navClass(a)} hide-sm`}>
                 @{user.username}
               </NavLink>
-              <NavLink to="/account" className={(a) => `${navClass(a)} hide-sm`}>
+              {/* On phones, Account replaces Log out (which lives on the Account page). */}
+              <NavLink to="/account" className={navClass}>
                 Account
               </NavLink>
-              <button className="btn btn-sm btn-ghost" onClick={handleLogout}>
+              <button className="btn btn-sm btn-ghost hide-sm" onClick={handleLogout}>
                 Log out
               </button>
             </>

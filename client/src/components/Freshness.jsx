@@ -62,7 +62,7 @@ export const FreshnessReport = ({ freshness, onRecheck, rechecking, children }) 
       <div className="spread">
         <div className="row">
           <FreshnessBadge status={status} score={score} />
-          <h3>{HEADLINES[status]}</h3>
+          <h2>{HEADLINES[status]}</h2>
           {score != null && <span className="faint">score {score}/100</span>}
         </div>
         {onRecheck && (

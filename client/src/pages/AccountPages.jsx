@@ -356,15 +356,31 @@ const Devices = () => {
 };
 
 export const Account = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   if (!user) return null;
   return (
     <div className="narrow" style={{ margin: '0 auto' }}>
       <h1>Account</h1>
-      <p className="faint">
-        Signed in as <b>@{user.username}</b>
-        {user.role === 'admin' && ' · admin'}
-      </p>
+      <div className="spread account-head">
+        <p className="faint">
+          Signed in as <b>@{user.username}</b>
+          {user.role === 'admin' && ' · admin'}
+        </p>
+        <span className="row">
+          <Link className="btn btn-sm" to={`/u/${user.username}`}>
+            View public profile
+          </Link>
+          <button
+            className="btn btn-sm btn-ghost"
+            onClick={async () => {
+              await logout();
+              window.location.assign('/');
+            }}
+          >
+            Log out
+          </button>
+        </span>
+      </div>
 
       <section className="card account-section">
         <h2 className="section-title">Email</h2>
