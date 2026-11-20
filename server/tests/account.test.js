@@ -140,3 +140,29 @@ describe('changing password', () => {
     await request(app).get('/api/auth/me').set(laptop).expect(401);
   });
 });
+
+describe('mailer settings', () => {
+  test('accepts separate SMTP settings so logins with @ need no encoding', () => {
+    const keys = ['SMTP_URL', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'];
+    const saved = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
+    try {
+      for (const k of keys) delete process.env[k];
+      assert.equal(mailer.configured(), false);
+      Object.assign(process.env, { SMTP_HOST: 'smtp-relay.brevo.com', SMTP_PORT: '587', SMTP_USER: '9abc@smtp-brevo.com', SMTP_PASS: ' key-123 ' });
+      assert.equal(mailer.configured(), true);
+      assert.deepEqual(mailer.transportConfig(), {
+        host: 'smtp-relay.brevo.com',
+        port: 587,
+        secure: false,
+        auth: { user: '9abc@smtp-brevo.com', pass: 'key-123' },
+      });
+      process.env.SMTP_PORT = '465';
+      assert.equal(mailer.transportConfig().secure, true);
+    } finally {
+      for (const k of keys) {
+        if (saved[k] === undefined) delete process.env[k];
+        else process.env[k] = saved[k];
+      }
+    }
+  });
+});

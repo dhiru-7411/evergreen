@@ -1,0 +1,31 @@
+# Opens the live site once a day. This keeps the free services awake enough
+# that MongoDB Atlas never pauses the database (it pauses free clusters after
+# 30 days without connections), and GitHub emails you if the site is down.
+#
+# Run it by hand: GitHub → Actions → Live site check → Run workflow.
+name: Live site check
+
+on:
+  schedule:
+    - cron: '17 9 * * *' # daily at 09:17 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SITE: https://evergreen-indol.vercel.app
+    steps:
+      - name: Website loads
+        run: curl --fail --silent --show-error --max-time 60 --retry 3 --retry-delay 10 "$SITE/" -o /dev/null
+
+      # The free API server sleeps when idle and takes about a minute to wake,
+      # so allow a few retries. Reading topics also proves the database is up.
+      - name: API and database answer
+        run: |
+          body=$(curl --fail --silent --show-error --max-time 90 \
+            --retry 5 --retry-delay 20 --retry-all-errors "$SITE/api/topics")
+          count=$(echo "$body" | jq 'length')
+          echo "Topics served: $count"
+          test "$count" -gt 0
