@@ -1,5 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import PostCard from '../components/PostCard';
 import { Loading, ErrorBox, Empty } from '../components/Status';
 import { formatDate, plural } from '../utils/format';
@@ -12,6 +13,7 @@ const Profile = () => {
   const page = Math.max(1, Number(params.get('page')) || 1);
 
   const { data: profile, loading, error } = useFetch(`/users/${encodeURIComponent(username)}`);
+  usePageMeta(`@${username}`);
   const authorId = profile?.user.id;
   const { data: posts } = useFetch(
     authorId ? `/posts?${new URLSearchParams({ author: authorId, page, limit: 10 })}` : null,

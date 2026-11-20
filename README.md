@@ -107,6 +107,7 @@ npm test              # API + unit tests against an in-memory MongoDB
 | --- | --- | --- |
 | API | [Render](https://render.com) (Blueprint) | [`render.yaml`](render.yaml): set `MONGO_URI` and `CLIENT_URL`; `JWT_SECRET` is generated |
 | Client | [Vercel](https://vercel.com) or Netlify, root `client/` | Replace `YOUR-API.onrender.com` in [`client/vercel.json`](client/vercel.json) (or [`client/public/_redirects`](client/public/_redirects)) with your API's host. The site calls `/api` on its own domain and the host forwards it to Render, so login cookies are first-party. Leave `VITE_API_URL` unset. |
+| Link previews | Vercel only | `client/vercel.json` sends link-preview bots (LinkedIn, Slack, WhatsApp, X, Discord...) to `/api/og`, which returns the page's title, description and image. Netlify can't route by user agent, so previews there show the site defaults. Set `APP_URL` on the API to your public site address. |
 | Database | MongoDB Atlas free tier | Allow Render's outbound IPs (or `0.0.0.0/0` for a demo) |
 
 After the first deploy, run `npm run seed` locally with `MONGO_URI` pointed at Atlas to load the demo posts.

@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import { FreshnessReport, StackChips } from '../components/Freshness';
 import Markdown from '../components/Markdown';
 import { Loading, ErrorBox } from '../components/Status';
@@ -14,6 +15,7 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: post, loading, error, reload } = useFetch(`/posts/${id}`);
+  usePageMeta(post?.title, post?.excerpt);
   const [actionError, setActionError] = useState('');
 
   // Opened via an old id link: show the readable address instead.

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import PostCard from '../components/PostCard';
 import { Loading, ErrorBox, Empty } from '../components/Status';
 import { plural } from '../utils/format';
@@ -56,6 +57,7 @@ const Home = () => {
   const query = new URLSearchParams({ page, limit: 10, ...(status !== 'all' && { status }), ...(q && { q }) });
   const { data, loading, error } = useFetch(`/posts?${query}`);
   const { data: stats } = useFetch('/posts/stats');
+  usePageMeta();
 
   const go = (next) =>
     setParams(Object.fromEntries(Object.entries(next).filter(([, v]) => v && v !== 'all' && v !== 1)));

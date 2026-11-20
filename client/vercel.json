@@ -1,7 +1,43 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-API.onrender.com/api/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://YOUR-API.onrender.com/api/:path*"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://YOUR-API.onrender.com/api/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://YOUR-API.onrender.com/api/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|LinkedInBot|Twitterbot|Slackbot|Slack-ImgProxy|Discordbot|WhatsApp|TelegramBot|SkypeUriPreview|redditbot|Pinterest|Embedly|Applebot|BingPreview|Mastodon|Bluesky|Google-InspectionTool).*"
+        }
+      ],
+      "destination": "https://YOUR-API.onrender.com/api/og?path=/"
+    },
+    {
+      "source": "/:path((?!assets/|og-default\\.png|favicon\\.svg).*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|LinkedInBot|Twitterbot|Slackbot|Slack-ImgProxy|Discordbot|WhatsApp|TelegramBot|SkypeUriPreview|redditbot|Pinterest|Embedly|Applebot|BingPreview|Mastodon|Bluesky|Google-InspectionTool).*"
+        }
+      ],
+      "destination": "https://YOUR-API.onrender.com/api/og?path=/:path"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

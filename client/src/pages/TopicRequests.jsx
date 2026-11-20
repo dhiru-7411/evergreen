@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import { useAuth } from '../context/AuthContext';
 import UserLink from '../components/UserLink';
 import { Loading, ErrorBox, Empty } from '../components/Status';
@@ -221,6 +222,7 @@ const TopicRequests = () => {
   const { user } = useAuth();
   const [tab, setTab] = useState('');
   const { data: categories } = useFetch('/topics/categories');
+  usePageMeta('Requested topics', 'Vote for what Evergreen should cover next.');
   const { data, loading, error, reload } = useFetch(`/topic-requests${tab ? `?status=${tab}` : ''}`, user?.id);
   const areaName = Object.fromEntries((categories ?? []).map((c) => [c.id, c.name]));
 
