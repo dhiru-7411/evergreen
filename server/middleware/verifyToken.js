@@ -1,33 +1,17 @@
-const jwt = require('jsonwebtoken');
+const { authenticate } = require('../services/sessions');
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ message: 'Invalid or expired token' });
-  }
+// Requires a signed-in user (access-token cookie for a live session).
+const verifyToken = async (req, res, next) => {
+  const user = await authenticate(req);
+  if (!user) return res.status(401).json({ message: 'Not signed in or session expired' });
+  req.user = user;
+  next();
 };
 
 // For public routes that show extra detail to signed-in users.
-const optionalAuth = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader?.startsWith('Bearer ')) {
-    try {
-      req.user = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
-    } catch {
-      // Treat a bad token on a public route as anonymous.
-    }
-  }
+const optionalAuth = async (req, res, next) => {
+  const user = await authenticate(req);
+  if (user) req.user = user;
   next();
 };
 

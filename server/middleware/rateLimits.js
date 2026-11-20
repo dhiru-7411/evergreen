@@ -16,4 +16,7 @@ const recheckLimiter = rateLimit({ ...common, windowMs: 60 * 1000, limit: 10 });
 // Submitting a resource makes the server fetch a third-party page.
 const submitLimiter = rateLimit({ ...common, windowMs: 60 * 60 * 1000, limit: 15 });
 
-module.exports = { authLimiter, recheckLimiter, submitLimiter };
+// AI generation costs money; cap it even for admins.
+const aiLimiter = rateLimit({ ...common, windowMs: 60 * 60 * 1000, limit: 20 });
+
+module.exports = { authLimiter, recheckLimiter, submitLimiter, aiLimiter };

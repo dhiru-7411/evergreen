@@ -1,0 +1,136 @@
+{
+  "basedOnVersion": "16.4.6",
+  "intro": "For React developers who want to build full-stack web apps with the Next.js App Router. You'll learn routing, Server and Client Components, fetching and changing data, caching, styling and deployment, following Next.js 16's current conventions rather than the Pages Router and Next.js 13-15 patterns many tutorials still use.",
+  "assumedKnowledge": [
+    "HTML, CSS and JavaScript",
+    "React fundamentals: components, props, state and hooks",
+    "Node.js 20.9 or newer and npm"
+  ],
+  "steps": [
+    {
+      "title": "Create an app and learn the project structure",
+      "goal": "Create a Next.js app with create-next-app and know which folders and files do what.",
+      "explanation": "create-next-app sets up TypeScript, linting and path aliases. In the App Router, the app/ folder defines routes: folders are URL segments, and special files like page, layout, loading and error give each segment its UI.",
+      "prerequisites": [],
+      "estimatedHours": 2,
+      "versionNote": "Next.js 16 needs Node.js 20.9+ and TypeScript 5.1+. Turbopack is now the default bundler for next dev and next build, so the --turbopack flag in older tutorials isn't needed. next lint was removed: run ESLint or Biome directly.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/installation", "title": "Installation" },
+        { "url": "https://nextjs.org/docs/app/getting-started/project-structure", "title": "Project structure" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Build pages and layouts, and navigate between them",
+      "goal": "Create pages, nested and dynamic routes, and shared layouts, and link between them with the Link component.",
+      "explanation": "A page.tsx file makes a route publicly accessible; a layout.tsx wraps its segment and keeps state across navigation. Dynamic segments like [slug] receive params. Link prefetches routes so navigation feels instant.",
+      "prerequisites": [1],
+      "estimatedHours": 3,
+      "versionNote": "In Next.js 16, params and searchParams are Promises and must be awaited (const { slug } = await props.params). The synchronous access allowed during Next.js 15 is gone. All parallel route slots now need a default.js file.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/layouts-and-pages", "title": "Layouts and pages" },
+        { "url": "https://nextjs.org/docs/app/getting-started/linking-and-navigating", "title": "Linking and navigating" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Decide between Server and Client Components",
+      "goal": "Render on the server by default and add 'use client' only for interactive parts.",
+      "explanation": "Components in the app directory are Server Components by default: they can fetch data directly and send no JavaScript for themselves. Add 'use client' to components that need state, effects or browser APIs, and keep that boundary as low in the tree as possible.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/server-and-client-components", "title": "Server and Client Components" }
+      ]
+    },
+    {
+      "title": "Fetch data and stream the UI",
+      "goal": "Load data in Server Components and show loading states with Suspense and loading.js.",
+      "explanation": "Server Components can be async and await data from APIs, databases or ORMs. Wrap slow parts in Suspense, or add a loading.js file, so the rest of the page streams to the browser first instead of waiting for everything.",
+      "prerequisites": [3],
+      "estimatedHours": 3,
+      "versionNote": "cookies(), headers() and draftMode() are async in Next.js 16 and must be awaited.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/fetching-data", "title": "Fetching data" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Change data with Server Functions",
+      "goal": "Handle form submissions and other updates with Server Functions (Server Actions) and refresh the UI afterwards.",
+      "explanation": "A function marked 'use server' runs on the server but can be called from forms and client code. Use it to write to your database, then revalidate or refresh so the page shows the new data.",
+      "prerequisites": [4],
+      "estimatedHours": 3,
+      "versionNote": "Next.js 16 adds updateTag() for read-your-writes updates in Server Actions and refresh() to refresh the client router from a Server Action.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/mutating-data", "title": "Mutating data" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Cache and revalidate",
+      "goal": "Decide what to cache, and refresh cached data on a timer or on demand.",
+      "explanation": "Caching makes repeated requests fast; revalidation keeps cached data from going stale. Learn time-based revalidation, on-demand revalidation with tags, and the 'use cache' directive with Cache Components.",
+      "prerequisites": [4, 5],
+      "estimatedHours": 4,
+      "versionNote": "Next.js 16 replaced experimental PPR, dynamicIO and useCache flags with the cacheComponents option. revalidateTag() now takes a second cacheLife argument (for example revalidateTag('posts', 'max')), and cacheLife and cacheTag no longer need the unstable_ prefix.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/caching", "title": "Caching" },
+        { "url": "https://nextjs.org/docs/app/getting-started/revalidating", "title": "Revalidating" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Handle errors",
+      "goal": "Show expected errors as UI and catch unexpected ones with error boundaries and not-found pages.",
+      "explanation": "Return expected errors (such as failed validation) from Server Functions as values, and let error.js boundaries catch unexpected exceptions for a route segment. notFound() and not-found.js handle missing resources.",
+      "prerequisites": [5],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/error-handling", "title": "Error handling" }
+      ]
+    },
+    {
+      "title": "Style and optimize images, fonts and metadata",
+      "goal": "Add CSS (Tailwind, CSS Modules or global CSS), and use the built-in image, font and metadata features for performance and SEO.",
+      "explanation": "Next.js supports several styling approaches out of the box. next/image serves resized, lazy-loaded images; next/font self-hosts fonts without layout shift; the Metadata API and OG image files control titles and link previews.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "Next.js 16 changed next/image defaults: minimumCacheTTL is 4 hours, qualities defaults to [75], local images with query strings need localPatterns, and images.domains is deprecated in favor of remotePatterns.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/css", "title": "CSS" },
+        { "url": "https://nextjs.org/docs/app/getting-started/images", "title": "Image optimization" },
+        { "url": "https://nextjs.org/docs/app/getting-started/fonts", "title": "Font optimization" },
+        { "url": "https://nextjs.org/docs/app/getting-started/metadata-and-og-images", "title": "Metadata and OG images" }
+      ]
+    },
+    {
+      "title": "Build APIs with Route Handlers and Proxy",
+      "goal": "Expose HTTP endpoints with route handlers, and run code before requests with Proxy for redirects, rewrites and headers.",
+      "explanation": "A route.ts file handles HTTP methods using the Web Request and Response APIs. A proxy file runs before a request completes, to redirect, rewrite or set headers, for example to protect routes.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "Next.js 16 renamed middleware to proxy (proxy.ts exporting a proxy function), and proxy always runs on the Node.js runtime. Tutorials that create middleware.ts show the deprecated convention.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/route-handlers", "title": "Route handlers" },
+        { "url": "https://nextjs.org/docs/app/getting-started/proxy", "title": "Proxy" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    },
+    {
+      "title": "Deploy and keep up to date",
+      "goal": "Deploy your app as a Node.js server, Docker container, static export or on a platform, and upgrade between versions safely.",
+      "explanation": "The deploying guide compares deployment options and which features each supports. The upgrading guide and codemods help you move to new versions without missing breaking changes.",
+      "prerequisites": [6, 7, 9],
+      "estimatedHours": 2,
+      "versionNote": "serverRuntimeConfig and publicRuntimeConfig were removed in Next.js 16: use environment variables, with the NEXT_PUBLIC_ prefix for values the browser needs.",
+      "sources": [
+        { "url": "https://nextjs.org/docs/app/getting-started/deploying", "title": "Deploying" },
+        { "url": "https://nextjs.org/docs/app/getting-started/upgrading", "title": "Upgrading" },
+        { "url": "https://nextjs.org/docs/app/guides/upgrading/version-16", "title": "Upgrading to version 16" }
+      ]
+    }
+  ]
+}

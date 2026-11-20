@@ -19,6 +19,12 @@ const Topics = lazy(() => import('./pages/Topics'));
 const TopicDetail = lazy(() => import('./pages/TopicDetail'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
 const ReviewQueue = lazy(() => import('./pages/ReviewQueue'));
+const TopicRequests = lazy(() => import('./pages/TopicRequests'));
+const VerifyEmail = lazy(() => import('./pages/AccountPages').then((m) => ({ default: m.VerifyEmail })));
+const ForgotPassword = lazy(() => import('./pages/AccountPages').then((m) => ({ default: m.ForgotPassword })));
+const ResetPassword = lazy(() => import('./pages/AccountPages').then((m) => ({ default: m.ResetPassword })));
+const Account = lazy(() => import('./pages/AccountPages').then((m) => ({ default: m.Account })));
+const VerifyBanner = lazy(() => import('./pages/AccountPages').then((m) => ({ default: m.VerifyBanner })));
 
 const protect = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 
@@ -26,12 +32,19 @@ function App() {
   return (
     <>
       <Navbar />
+      <Suspense fallback={null}>
+        <VerifyBanner />
+      </Suspense>
       <main className="container">
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/account" element={protect(<Account />)} />
             <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/posts/:id/history" element={<History />} />
             <Route path="/posts/:id/edit" element={protect(<EditPost />)} />
@@ -41,6 +54,7 @@ function App() {
             <Route path="/learn" element={<Topics />} />
             <Route path="/learn/new" element={protect(<NewTopic />)} />
             <Route path="/learn/review" element={protect(<ReviewQueue />)} />
+            <Route path="/learn/requests" element={<TopicRequests />} />
             <Route path="/learn/:slug" element={<TopicDetail />} />
             <Route path="/inbox" element={protect(<Inbox />)} />
             <Route path="/create" element={protect(<CreatePost />)} />

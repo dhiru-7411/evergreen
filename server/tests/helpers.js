@@ -81,12 +81,19 @@ async function resetDb() {
   await Promise.all(Object.values(mongoose.connection.collections).map((c) => c.deleteMany({})));
 }
 
+// Signs up and returns the session cookie as a ready-to-use header set.
+const cookieHeader = (res) =>
+  (res.headers['set-cookie'] || [])
+    .map((c) => c.split(';')[0])
+    .filter((c) => !c.endsWith('='))
+    .join('; ');
+
 async function signup(username) {
   const res = await request(app)
     .post('/api/auth/register')
     .send({ username, email: `${username}@example.com`, password: 'password123' })
     .expect(201);
-  return { token: res.body.token, id: res.body.user.id, auth: { Authorization: `Bearer ${res.body.token}` } };
+  return { id: res.body.user.id, cookies: res.headers['set-cookie'], auth: { Cookie: cookieHeader(res) } };
 }
 
 async function makeAdmin(user) {
@@ -94,4 +101,4 @@ async function makeAdmin(user) {
   return user;
 }
 
-module.exports = { app, request, setup, teardown, resetDb, signup, makeAdmin, LATEST, DOWNLOADS, PUBLISHED, npmDown };
+module.exports = { app, request, setup, teardown, resetDb, signup, makeAdmin, cookieHeader, LATEST, DOWNLOADS, PUBLISHED, npmDown };

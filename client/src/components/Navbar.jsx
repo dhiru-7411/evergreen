@@ -10,8 +10,8 @@ const Navbar = () => {
   // Refetch on navigation so the count drops right after a review.
   const { data: inbox } = useFetch(user ? '/fixes/inbox' : null, location.key);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     // Full reload rather than navigate(): router navigations run in a
     // transition, so on a protected page ProtectedRoute would redirect to
     // /login (remembering this page) first. A reload also drops any of the
@@ -41,6 +41,9 @@ const Navbar = () => {
               </NavLink>
               <NavLink to={`/u/${user.username}`} className={(a) => `${navClass(a)} hide-sm`}>
                 @{user.username}
+              </NavLink>
+              <NavLink to="/account" className={(a) => `${navClass(a)} hide-sm`}>
+                Account
               </NavLink>
               <button className="btn btn-sm btn-ghost" onClick={handleLogout}>
                 Log out

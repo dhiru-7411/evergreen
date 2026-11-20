@@ -6,6 +6,9 @@ const { getPackageInfo } = require('../services/packageInfo');
 const { refreshTopic, isStale } = require('../services/topicService');
 const { CATEGORIES } = require('../config/categories');
 const { approvedResources, ownResources } = require('./resourceController');
+const { publicPath } = require('./pathController');
+const { closeRequestsFor } = require('./topicRequestController');
+const LearningPath = require('../models/LearningPath');
 
 const RELATED_POST_LIMIT = 20;
 const STATUS_ORDER = { fresh: 0, aging: 1, untracked: 2, stale: 3 };
@@ -109,6 +112,7 @@ const getTopic = async (req, res) => {
     // The summary is either written by an editor or npm's own description.
     summarySource: topic.summary ? 'editor' : primary?.description ? `npm:${primaryName}` : null,
     sources: buildSources(topic),
+    path: await publicPath(topic),
     posts: await relatedPosts(topic.packages),
     resources: await approvedResources(topic._id),
     myResources: await ownResources(topic._id, req.user?.id),
@@ -116,7 +120,7 @@ const getTopic = async (req, res) => {
 };
 
 const createTopic = async (req, res) => {
-  const { name, category, summary, packages, alternatives, keywords } = req.body;
+  const { name, category, summary, packages, alternatives, keywords, docsDomains } = req.body;
   const slug = Topic.slugify(name);
   if (!slug) throw new HttpError(400, 'Name needs at least one letter or number');
   if (await Topic.exists({ slug })) throw new HttpError(409, `A topic called "${name}" already exists`);
@@ -136,16 +140,18 @@ const createTopic = async (req, res) => {
     packages,
     alternatives: cleanAlternatives,
     keywords,
+    docsDomains,
     createdBy: req.user.id,
   });
   await refreshTopic(topic);
+  await closeRequestsFor(topic);
   res.status(201).json(summarize(topic));
 };
 
 const deleteTopic = async (req, res) => {
   const topic = await Topic.findOneAndDelete({ slug: req.params.slug });
   if (!topic) throw new HttpError(404, 'Topic not found');
-  await Resource.deleteMany({ topic: topic._id });
+  await Promise.all([Resource.deleteMany({ topic: topic._id }), LearningPath.deleteMany({ topic: topic._id })]);
   res.json({ message: 'Topic deleted' });
 };
 

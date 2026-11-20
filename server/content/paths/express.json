@@ -1,0 +1,131 @@
+{
+  "basedOnVersion": "5.3.0",
+  "intro": "For developers who know JavaScript and Node.js basics and want to build web servers and REST APIs with Express 5. You'll go from a first server to routing, middleware, error handling, data, and production practices, using Express 5's current behaviour rather than the Express 4 patterns most older tutorials teach.",
+  "assumedKnowledge": [
+    "Modern JavaScript, including async/await and ES modules or CommonJS",
+    "Node.js 18 or newer and npm",
+    "HTTP basics: methods, status codes, headers and JSON"
+  ],
+  "steps": [
+    {
+      "title": "Install Express and run your first server",
+      "goal": "Create a project, install Express 5 and serve a Hello World response.",
+      "explanation": "Create a folder, run npm init, and install express. A minimal app creates an application with express(), registers a route with app.get('/', handler) and starts listening on a port. Express 5 requires Node.js 18 or newer.",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "Express 5 is the current major version and needs Node.js 18+. Tutorials that pin express@4 teach APIs that Express 5 removed.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/starter/installing", "title": "Installing" },
+        { "url": "https://expressjs.com/en/5x/starter/hello-world", "title": "Hello world example" }
+      ]
+    },
+    {
+      "title": "Route requests to handlers",
+      "goal": "Define routes for each HTTP method, read route parameters and query strings, and group routes with express.Router.",
+      "explanation": "A route pairs an HTTP method and a path with one or more handler functions. Use route parameters such as /users/:id to capture values in req.params, and express.Router() to split related routes into their own modules mounted with app.use().",
+      "prerequisites": [1],
+      "estimatedHours": 3,
+      "versionNote": "Express 5 changed path syntax. Wildcards must be named (/*splat, or /{*splat} to also match the root), optional parameters use braces (/:file{.:ext}) instead of ?, and regular-expression characters in string paths are no longer supported. req.query is read-only and uses the simple parser by default.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/starter/basic-routing", "title": "Basic routing" },
+        { "url": "https://expressjs.com/en/5x/guide/routing", "title": "Routing" },
+        { "url": "https://expressjs.com/en/guide/migrating-5", "title": "Migrating to Express 5" }
+      ]
+    },
+    {
+      "title": "Understand and write middleware",
+      "goal": "Explain how middleware functions form a request pipeline, and write your own for logging, auth checks and validation.",
+      "explanation": "Middleware functions receive req, res and next, and either end the response or call next() to pass control on. Order matters: middleware runs in the order it's registered. Application-level, router-level and built-in middleware all follow the same pattern.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/guide/writing-middleware", "title": "Writing middleware" },
+        { "url": "https://expressjs.com/en/5x/guide/using-middleware", "title": "Using middleware" }
+      ]
+    },
+    {
+      "title": "Parse request bodies and serve static files",
+      "goal": "Accept JSON and form submissions with the built-in body parsers, and serve a folder of static files.",
+      "explanation": "express.json() and express.urlencoded() parse request bodies into req.body, and express.static() serves files such as images and a built front end. No separate body-parser package is needed.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "In Express 5, express.urlencoded() defaults to extended: false, req.body is undefined (not {}) when nothing was parsed, and express.static() ignores dot-files and dot-directories by default. Older tutorials that install body-parser separately or rely on req.body always being an object are out of date.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/starter/static-files", "title": "Serving static files" },
+        { "url": "https://expressjs.com/en/guide/migrating-5", "title": "Migrating to Express 5" }
+      ]
+    },
+    {
+      "title": "Use the request and response APIs",
+      "goal": "Read headers, params and bodies from req, and send JSON, status codes, redirects and files with res.",
+      "explanation": "The API reference documents every property and method on the application, request, response and router objects. Use res.status(code).json(data) for APIs and res.sendStatus(code) for empty responses.",
+      "prerequisites": [2],
+      "estimatedHours": 2,
+      "versionNote": "Express 5 removed several old signatures: use res.status(404).json(obj) instead of res.json(obj, 404), res.sendStatus(code) instead of res.send(code), res.redirect(status, url) argument order, res.sendFile instead of res.sendfile, and app.delete instead of app.del. req.param() is gone; read from req.params, req.body or req.query.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/api", "title": "Express 5 API reference" },
+        { "url": "https://expressjs.com/en/guide/migrating-5", "title": "Migrating to Express 5" }
+      ]
+    },
+    {
+      "title": "Handle errors, including in async code",
+      "goal": "Write an error-handling middleware and let Express forward errors from async handlers to it.",
+      "explanation": "Error handlers are middleware with four arguments (err, req, res, next) registered after your routes. Respond with a safe message and status, and keep stack traces out of production responses.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "Express 5 catches rejected promises from async handlers and middleware and passes them to your error handler, so the try/catch-and-next(err) wrappers and express-async-errors package from Express 4 tutorials are no longer needed.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/guide/error-handling", "title": "Error handling" },
+        { "url": "https://expressjs.com/en/guide/migrating-5", "title": "Migrating to Express 5" }
+      ]
+    },
+    {
+      "title": "Connect a database",
+      "goal": "Choose a database driver for your app and read and write data from your route handlers.",
+      "explanation": "Express has no built-in database layer. You add the Node.js driver or library for your database (for example MongoDB, PostgreSQL or Redis) and call it from your handlers, keeping data access in separate modules.",
+      "prerequisites": [5, 6],
+      "estimatedHours": 4,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://expressjs.com/en/guide/database-integration", "title": "Database integration" }
+      ]
+    },
+    {
+      "title": "Debug and run behind a proxy",
+      "goal": "Turn on Express's debug logging and configure trust proxy so client IPs and protocols are correct when deployed.",
+      "explanation": "Set the DEBUG environment variable to see internal routing logs. Most hosting platforms put a proxy or load balancer in front of your app; the trust proxy setting tells Express to read the forwarded client IP and protocol.",
+      "prerequisites": [3],
+      "estimatedHours": 1,
+      "versionNote": "Router debug namespaces changed in Express 5 from express:router to router.",
+      "sources": [
+        { "url": "https://expressjs.com/en/5x/guide/debugging", "title": "Debugging Express" },
+        { "url": "https://expressjs.com/en/5x/guide/behind-proxies", "title": "Express behind proxies" }
+      ]
+    },
+    {
+      "title": "Secure your app",
+      "goal": "Apply the official security practices: dependency updates, TLS, secure headers, input validation, safe cookies and brute-force protection.",
+      "explanation": "The security best-practices guide covers using maintained Express versions, serving over TLS, adding secure HTTP headers (for example with Helmet), validating user input, setting cookies securely, and limiting repeated login attempts.",
+      "prerequisites": [3, 6],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://expressjs.com/en/advanced/best-practice-security", "title": "Security best practices" },
+        { "url": "https://expressjs.com/en/advanced/security-updates", "title": "Security updates" }
+      ]
+    },
+    {
+      "title": "Prepare for production",
+      "goal": "Run Express fast and reliably in production with the right environment settings, logging, process management, health checks and graceful shutdown.",
+      "explanation": "Set NODE_ENV=production, use compression and async logging, avoid synchronous functions in request handlers, run under a process manager or container restart policy, and handle shutdown signals so in-flight requests finish.",
+      "prerequisites": [6, 8],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://expressjs.com/en/advanced/best-practice-performance", "title": "Performance best practices" },
+        { "url": "https://expressjs.com/en/advanced/healthcheck-graceful-shutdown", "title": "Health checks and graceful shutdown" }
+      ]
+    }
+  ]
+}

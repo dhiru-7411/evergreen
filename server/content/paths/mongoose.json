@@ -1,0 +1,130 @@
+{
+  "basedOnVersion": "9.12.2",
+  "intro": "For Node.js developers who want to store and query data in MongoDB with Mongoose 9. You'll go from connecting and defining schemas to validation, relationships, middleware, transactions and production indexes, using async/await throughout, as current Mongoose requires.",
+  "assumedKnowledge": [
+    "JavaScript with async/await",
+    "Node.js 20.19 or newer and npm",
+    "A MongoDB database to connect to (local or a free Atlas cluster)"
+  ],
+  "steps": [
+    {
+      "title": "Install Mongoose, connect and save your first document",
+      "goal": "Connect to MongoDB, define a schema and model, then save and find documents.",
+      "explanation": "Install mongoose, await mongoose.connect() with your connection string, describe your data with a Schema, compile it into a Model with mongoose.model(), then create documents with new Model() and save(), and read them back with find().",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "Mongoose 9 requires Node.js 20.19 or newer. Every model and query method returns a promise: callback-style code like Model.find({}, function (err, docs) {}) was removed back in Mongoose 7.",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/index.html", "title": "Quick start" },
+        { "url": "https://mongoosejs.com/docs/migrating_to_7.html", "title": "Migrating to Mongoose 7" }
+      ]
+    },
+    {
+      "title": "Manage connections",
+      "goal": "Configure connection options, handle connection errors and events, and know when to use multiple connections.",
+      "explanation": "Mongoose buffers model calls until a connection is open. Learn the connection string format, the options you can pass, how to listen for connection events and errors, and how createConnection() gives you separate connections.",
+      "prerequisites": [1],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/connections.html", "title": "Connections" }
+      ]
+    },
+    {
+      "title": "Design schemas with the right types",
+      "goal": "Model real data with SchemaTypes, defaults, nested objects, subdocuments, timestamps, and instance and static methods.",
+      "explanation": "A schema maps to a MongoDB collection and defines the shape of its documents. Choose SchemaTypes (String, Number, Date, ObjectId, arrays and more), add defaults, embed subdocuments for data that belongs together, and turn on timestamps for createdAt and updatedAt.",
+      "prerequisites": [1],
+      "estimatedHours": 4,
+      "versionNote": "In Mongoose 9, UUID paths return bson.UUID instances instead of strings.",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/guide.html", "title": "Schemas" },
+        { "url": "https://mongoosejs.com/docs/schematypes.html", "title": "SchemaTypes" },
+        { "url": "https://mongoosejs.com/docs/subdocs.html", "title": "Subdocuments" }
+      ]
+    },
+    {
+      "title": "Work with models and documents",
+      "goal": "Create, read, update and delete data through models, and understand what a document is and how saving tracks changes.",
+      "explanation": "Models are constructors compiled from schemas; documents are instances of models. Learn the difference between updating a document and calling save() versus using Model.updateOne(), and how Mongoose tracks which fields changed.",
+      "prerequisites": [3],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/models.html", "title": "Models" },
+        { "url": "https://mongoosejs.com/docs/documents.html", "title": "Documents" }
+      ]
+    },
+    {
+      "title": "Query data",
+      "goal": "Filter, sort, project and paginate results, and update documents with queries.",
+      "explanation": "Model helpers like find(), findOne() and findOneAndUpdate() return Query objects you can chain (sort, limit, select) and await. Learn how filters are cast to your schema types.",
+      "prerequisites": [4],
+      "estimatedHours": 3,
+      "versionNote": "Since Mongoose 7, strictQuery is false by default, so filters on fields not in your schema are no longer silently removed. In Mongoose 9, prefer the returnDocument option over new/returnOriginal in findOneAndUpdate(), and update pipelines must be explicitly enabled with updatePipeline: true.",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/queries.html", "title": "Queries" },
+        { "url": "https://mongoosejs.com/docs/migrating_to_9.html", "title": "Migrating to Mongoose 9" },
+        { "url": "https://mongoosejs.com/docs/migrating_to_7.html", "title": "Migrating to Mongoose 7" }
+      ]
+    },
+    {
+      "title": "Validate data",
+      "goal": "Use built-in and custom validators so invalid data never reaches the database, and handle validation errors.",
+      "explanation": "Validation is defined on the schema and runs before save. Use built-in validators like required, min, max, enum and match, write custom validators (including async ones), and know that update validators must be turned on for update queries.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/validation.html", "title": "Validation" }
+      ]
+    },
+    {
+      "title": "Relate collections with populate",
+      "goal": "Reference documents in other collections with ObjectId refs and load them with populate().",
+      "explanation": "Store references with type ObjectId and a ref to another model, then call populate() on a query to replace the IDs with the referenced documents. Learn to select fields when populating and to avoid populating more than you need.",
+      "prerequisites": [5],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/populate.html", "title": "Populate" }
+      ]
+    },
+    {
+      "title": "Hook into the lifecycle with middleware",
+      "goal": "Run code before and after saves, validations, queries and deletes, for example to hash passwords or keep fields in sync.",
+      "explanation": "Middleware (pre and post hooks) runs at specific points in a document's or query's life. Know the difference between document middleware (this is the document) and query middleware (this is the query).",
+      "prerequisites": [4, 5],
+      "estimatedHours": 2,
+      "versionNote": "Mongoose 9 removed next() from pre middleware: write pre hooks as async functions or return a promise. Most tutorials still show schema.pre('save', function (next) { ...; next(); }), which no longer works.",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/middleware.html", "title": "Middleware" },
+        { "url": "https://mongoosejs.com/docs/migrating_to_9.html", "title": "Migrating to Mongoose 9" }
+      ]
+    },
+    {
+      "title": "Keep multi-step writes consistent with transactions",
+      "goal": "Group related writes so they all succeed or all fail.",
+      "explanation": "MongoDB transactions need a replica set (Atlas clusters are replica sets). Use connection.transaction() or a session to run several operations atomically, such as debiting one account and crediting another.",
+      "prerequisites": [5],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/transactions.html", "title": "Transactions" }
+      ]
+    },
+    {
+      "title": "Add TypeScript and production indexes",
+      "goal": "Type your schemas and models, and define the indexes your queries need for production.",
+      "explanation": "Mongoose infers types from schemas, or you can supply your own interfaces. In production, define indexes on the fields you filter and sort by, and manage index builds deliberately rather than relying on autoIndex.",
+      "prerequisites": [3, 5],
+      "estimatedHours": 3,
+      "versionNote": "Mongoose 9 renamed the FilterQuery type to QueryFilter, typed Document.id as string, and removed the background index option.",
+      "sources": [
+        { "url": "https://mongoosejs.com/docs/typescript.html", "title": "TypeScript support" },
+        { "url": "https://mongoosejs.com/docs/production/indexes.html", "title": "Indexes in production" },
+        { "url": "https://mongoosejs.com/docs/migrating_to_9.html", "title": "Migrating to Mongoose 9" }
+      ]
+    }
+  ]
+}

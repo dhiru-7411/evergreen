@@ -1,0 +1,136 @@
+{
+  "basedOnVersion": "0.88.1",
+  "intro": "For React developers who want to build native iOS and Android apps. You'll start with Expo (the framework React Native now recommends), learn the core components, styling and layout, navigation, data and performance, and ship to the app stores, all on the New Architecture that every current React Native release runs on.",
+  "assumedKnowledge": [
+    "React fundamentals: components, props, state and hooks",
+    "JavaScript or TypeScript",
+    "A phone or emulator/simulator to run the app"
+  ],
+  "steps": [
+    {
+      "title": "Create an app with Expo",
+      "goal": "Create a new React Native project with create-expo-app and run it on your phone or a simulator.",
+      "explanation": "React Native recommends starting new apps with a framework, and Expo is the main one: it adds file-based routing, a library of native modules and build tooling. Run npx create-expo-app@latest and open the app on a device.",
+      "prerequisites": [],
+      "estimatedHours": 2,
+      "versionNote": "Older tutorials start with react-native init or the React Native CLI without a framework. The official docs now recommend a framework such as Expo for new apps.",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/environment-setup", "title": "Get started with React Native" },
+        { "url": "https://docs.expo.dev/get-started/create-a-project/", "title": "Create a project" }
+      ]
+    },
+    {
+      "title": "Learn the core components",
+      "goal": "Build screens with View, Text, Image, TextInput and ScrollView, and understand how they map to native views.",
+      "explanation": "React Native components render real native views, not HTML. Learn the core components, how React concepts apply, and how to handle text input.",
+      "prerequisites": [1],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/intro-react-native-components", "title": "Core components and native components" },
+        { "url": "https://reactnative.dev/docs/intro-react", "title": "React fundamentals" },
+        { "url": "https://reactnative.dev/docs/handling-text-input", "title": "Handling text input" }
+      ]
+    },
+    {
+      "title": "Style and lay out screens with Flexbox",
+      "goal": "Style components with StyleSheet and build responsive layouts with Flexbox.",
+      "explanation": "Styles are JavaScript objects with camelCase properties, usually created with StyleSheet.create. Layout uses Flexbox, with column as the default direction, unlike on the web.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/style", "title": "Style" },
+        { "url": "https://reactnative.dev/docs/flexbox", "title": "Layout with Flexbox" },
+        { "url": "https://reactnative.dev/docs/height-and-width", "title": "Height and width" }
+      ]
+    },
+    {
+      "title": "Render lists and handle touches",
+      "goal": "Show long lists efficiently with FlatList and respond to taps and gestures.",
+      "explanation": "FlatList and SectionList render only what's on screen, which matters for long lists. Pressable handles taps, long presses and pressed styles.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/using-a-listview", "title": "Using list views" },
+        { "url": "https://reactnative.dev/docs/handling-touches", "title": "Handling touches" }
+      ]
+    },
+    {
+      "title": "Navigate between screens with Expo Router",
+      "goal": "Add screens, tabs and stacks with file-based routing.",
+      "explanation": "Expo Router turns files in the app directory into screens, similar to web frameworks, and supports stacks, tabs and deep links. The React Native docs also cover navigation libraries in general.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://docs.expo.dev/router/introduction/", "title": "Introduction to Expo Router" },
+        { "url": "https://reactnative.dev/docs/navigation", "title": "Navigating between screens" }
+      ]
+    },
+    {
+      "title": "Fetch data and handle platform differences",
+      "goal": "Load data from APIs, and write code that behaves differently on iOS and Android where needed.",
+      "explanation": "Use fetch to call your backend. Platform.OS and .ios.js / .android.js files let you tailor behaviour or styling per platform.",
+      "prerequisites": [4],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/network", "title": "Networking" },
+        { "url": "https://reactnative.dev/docs/platform-specific-code", "title": "Platform-specific code" }
+      ]
+    },
+    {
+      "title": "Add animations and accessibility",
+      "goal": "Animate UI smoothly and make your app usable with screen readers.",
+      "explanation": "The Animated API drives animations, ideally on the native thread. Accessibility props such as accessibilityLabel and role make components work with VoiceOver and TalkBack.",
+      "prerequisites": [3],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/animations", "title": "Animations" },
+        { "url": "https://reactnative.dev/docs/accessibility", "title": "Accessibility" }
+      ]
+    },
+    {
+      "title": "Debug, test and profile",
+      "goal": "Debug with React Native DevTools, test components, and find performance problems.",
+      "explanation": "React Native DevTools lets you inspect components and set breakpoints. Learn the testing approaches the docs recommend, and the common causes of slow frames.",
+      "prerequisites": [4],
+      "estimatedHours": 3,
+      "versionNote": "React Native DevTools, introduced in 0.76, replaced older debuggers such as the Chrome-based remote debugger used in many tutorials.",
+      "sources": [
+        { "url": "https://reactnative.dev/docs/debugging", "title": "Debugging basics" },
+        { "url": "https://reactnative.dev/docs/testing-overview", "title": "Testing" },
+        { "url": "https://reactnative.dev/docs/performance", "title": "Performance overview" }
+      ]
+    },
+    {
+      "title": "Understand the New Architecture",
+      "goal": "Explain what the New Architecture changed and why older native-module tutorials may not apply.",
+      "explanation": "The New Architecture replaced the old bridge with direct communication between JavaScript and native code, with Codegen for type-safe native modules. Every current release runs on it.",
+      "prerequisites": [8],
+      "estimatedHours": 2,
+      "versionNote": "The New Architecture became the default in React Native 0.76, and 0.82 was the first release to run entirely on it. Guides about the old bridge and legacy native modules describe the Legacy Architecture.",
+      "sources": [
+        { "url": "https://reactnative.dev/blog/2024/10/23/release-0.76-new-architecture", "title": "React Native 0.76: New Architecture by default" },
+        { "url": "https://reactnative.dev/blog/2025/10/08/react-native-0.82", "title": "React Native 0.82: A New Era" },
+        { "url": "https://reactnative.dev/docs/the-new-architecture/what-is-codegen", "title": "What is Codegen?" }
+      ]
+    },
+    {
+      "title": "Build, ship and update your app",
+      "goal": "Create development builds, build for the app stores, and keep up with React Native upgrades.",
+      "explanation": "Development builds let you use any native library. EAS Build creates store-ready binaries and EAS Update ships JavaScript fixes without a store release. Follow the upgrade guide and release posts when new versions come out.",
+      "prerequisites": [5, 8],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://docs.expo.dev/develop/development-builds/introduction/", "title": "Introduction to development builds" },
+        { "url": "https://docs.expo.dev/build/introduction/", "title": "EAS Build" },
+        { "url": "https://reactnative.dev/docs/upgrading", "title": "Upgrading to new versions" }
+      ]
+    }
+  ]
+}

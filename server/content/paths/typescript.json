@@ -1,0 +1,132 @@
+{
+  "basedOnVersion": "7.0.2",
+  "intro": "For JavaScript developers who want to add static types to their code. You'll learn the type system from everyday types to generics and type manipulation, then configure real projects, on TypeScript 7, the native compiler that is about 10x faster and has stricter defaults than the versions most tutorials were written for.",
+  "assumedKnowledge": [
+    "Modern JavaScript: functions, objects, classes, modules and async/await",
+    "Node.js and npm"
+  ],
+  "steps": [
+    {
+      "title": "Understand what TypeScript adds to JavaScript",
+      "goal": "Explain how types catch bugs before code runs, and how TypeScript compiles to plain JavaScript.",
+      "explanation": "TypeScript is JavaScript with a static type layer. The compiler checks your code, then removes the types so the output runs anywhere JavaScript runs. Start with the guide that matches your background.",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html", "title": "TypeScript for JavaScript programmers" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html", "title": "TypeScript for the new programmer" }
+      ]
+    },
+    {
+      "title": "Install TypeScript and run the compiler",
+      "goal": "Add TypeScript to a project, compile with tsc and see type errors in your editor.",
+      "explanation": "Install typescript as a dev dependency and run npx tsc. Editors like VS Code use the TypeScript language service to show errors and completions as you type.",
+      "prerequisites": [1],
+      "estimatedHours": 1,
+      "versionNote": "TypeScript 7 is a native (Go) port of the compiler: full builds are typically 8-12x faster. It's installed the same way (npm install -D typescript) and run with tsc, but it ships without the old programmatic API, so some tools (for example Vue, Svelte, Astro and MDX editor plugins) still need TypeScript 6 alongside it via the @typescript/typescript6 package.",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/typescript-tooling-in-5-minutes.html", "title": "TypeScript tooling in 5 minutes" },
+        { "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/", "title": "Announcing TypeScript 7.0" }
+      ]
+    },
+    {
+      "title": "Learn the basics and everyday types",
+      "goal": "Annotate variables, functions and objects with primitives, arrays, unions, type aliases and interfaces.",
+      "explanation": "Most code needs only a handful of types: string, number, boolean, arrays, object types, union types, optional properties, type aliases and interfaces. TypeScript infers many types for you, so you annotate mainly function parameters and public APIs.",
+      "prerequisites": [2],
+      "estimatedHours": 4,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/basic-types.html", "title": "The basics" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html", "title": "Everyday types" }
+      ]
+    },
+    {
+      "title": "Narrow types safely",
+      "goal": "Use typeof, in, instanceof, equality checks and discriminated unions so TypeScript knows exactly which type you're working with.",
+      "explanation": "When a value could be several types, checks in your code narrow it to one. Discriminated unions (a shared kind field) are the standard pattern for modelling states such as loading, success and error.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html", "title": "Narrowing" }
+      ]
+    },
+    {
+      "title": "Type functions and objects in depth",
+      "goal": "Write precise function types (overloads, optional and rest parameters) and object types (readonly, index signatures, extending).",
+      "explanation": "Function types describe parameters and return values, including callbacks. Object types can be extended and combined, marked readonly, and given index signatures for dictionary-like data.",
+      "prerequisites": [3],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html", "title": "More on functions" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/objects.html", "title": "Object types" }
+      ]
+    },
+    {
+      "title": "Write reusable code with generics",
+      "goal": "Create functions, types and classes that work with many types while staying type-safe.",
+      "explanation": "Generics let a function or type take a type parameter, such as a list of T or a fetch helper returning Promise<T>. Constraints (T extends ...) limit what types are allowed.",
+      "prerequisites": [5],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/generics.html", "title": "Generics" }
+      ]
+    },
+    {
+      "title": "Build types from other types",
+      "goal": "Use keyof, typeof, indexed access, conditional, mapped and template literal types, plus the built-in utility types.",
+      "explanation": "Instead of repeating yourself, derive types from existing ones: Partial, Pick, Omit and Record cover most needs, and the type operators let you build your own transformations.",
+      "prerequisites": [6],
+      "estimatedHours": 4,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/types-from-types.html", "title": "Creating types from types" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/mapped-types.html", "title": "Mapped types" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/utility-types.html", "title": "Utility types" }
+      ]
+    },
+    {
+      "title": "Use classes and modules",
+      "goal": "Type classes (fields, access modifiers, implements) and organise code with ES modules.",
+      "explanation": "TypeScript adds typing and modifiers like private and readonly to JavaScript classes. Code is organised with standard import and export; type-only imports keep types out of the emitted JavaScript.",
+      "prerequisites": [5],
+      "estimatedHours": 2,
+      "versionNote": "TypeScript 7 no longer accepts the module keyword for namespace declarations, and import assertions (assert) must be written as import attributes (with).",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/classes.html", "title": "Classes" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/2/modules.html", "title": "Modules" },
+        { "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/", "title": "Announcing TypeScript 7.0" }
+      ]
+    },
+    {
+      "title": "Configure a project with tsconfig.json",
+      "goal": "Set up tsconfig.json with the right module, target and strictness settings for your project.",
+      "explanation": "tsconfig.json tells the compiler which files to check and how. The TSConfig reference documents every option; the modules reference explains how to pick module and moduleResolution for Node.js or bundlers.",
+      "prerequisites": [2, 8],
+      "estimatedHours": 3,
+      "versionNote": "TypeScript 7 changed defaults: strict is now true, module defaults to esnext, target to the latest stable ECMAScript version, rootDir to ./ and types to []. These old options now error: target es5, moduleResolution node/node10/classic, module amd/umd/system/none, baseUrl, and esModuleInterop set to false. Many tsconfig examples online still use them.",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/tsconfig-json.html", "title": "What is a tsconfig.json" },
+        { "url": "https://www.typescriptlang.org/tsconfig/", "title": "TSConfig reference" },
+        { "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/", "title": "Announcing TypeScript 7.0" }
+      ]
+    },
+    {
+      "title": "Migrate JavaScript and scale with project references",
+      "goal": "Adopt TypeScript gradually in an existing JavaScript codebase and split large codebases into referenced projects.",
+      "explanation": "You can type-check JavaScript files and convert them one at a time. Project references let large repos build parts separately and incrementally.",
+      "prerequisites": [9],
+      "estimatedHours": 3,
+      "versionNote": "TypeScript 7 reworked JavaScript checking to match .ts analysis, so some older JSDoc patterns (such as Closure-style function types and @enum) are no longer supported.",
+      "sources": [
+        { "url": "https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html", "title": "Migrating from JavaScript" },
+        { "url": "https://www.typescriptlang.org/docs/handbook/project-references.html", "title": "Project references" },
+        { "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/", "title": "Announcing TypeScript 7.0" }
+      ]
+    }
+  ]
+}

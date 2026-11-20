@@ -35,6 +35,16 @@ const register = z.object({
   password: z.string().min(8, 'Use at least 8 characters').max(128),
 });
 
+const password = z.string().min(8, 'Use at least 8 characters').max(128);
+const emailToken = z.string().trim().min(20).max(200);
+
+const verifyEmail = z.object({ token: emailToken });
+const forgotPassword = z.object({ email: z.email().trim().toLowerCase() });
+const resetPassword = z.object({ token: emailToken, password });
+const changePassword = z
+  .object({ currentPassword: z.string().min(1).max(128), newPassword: password })
+  .refine((b) => b.currentPassword !== b.newPassword, { message: 'Choose a different password', path: ['newPassword'] });
+
 const login = z.object({
   email: z.email().trim().toLowerCase(),
   password: z.string().min(1).max(128),
@@ -103,7 +113,45 @@ const createTopic = z.object({
     .refine((a) => new Set(a.map((x) => x.name)).size === a.length, 'Duplicate alternative')
     .default([]),
   keywords: z.array(z.string().trim().min(2).max(40)).max(10, 'At most 10 keywords').default([]),
+  docsDomains: z
+    .array(
+      z
+        .string()
+        .trim()
+        .toLowerCase()
+        .regex(/^([a-z0-9-]+\.)+[a-z]{2,}$/, 'Use a bare domain like react.dev')
+    )
+    .max(5, 'At most 5 docs domains')
+    .default([]),
 });
+
+const createTopicRequest = z.object({
+  name: z.string().trim().min(2).max(60),
+  category: z.enum(CATEGORY_IDS, 'Pick one of the listed areas. Evergreen only covers these.'),
+  packageName: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(214)
+    .regex(PACKAGE_NAME, 'Not a valid npm package name')
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
+  description: z.string().trim().max(500).default(''),
+});
+
+const listTopicRequests = z.object({
+  status: z.enum(['open', 'planned', 'done', 'declined']).optional(),
+});
+
+const updateTopicRequest = z
+  .object({
+    status: z.enum(['open', 'planned', 'done', 'declined']).optional(),
+    adminNote: z.string().trim().max(280).optional(),
+    topicSlug: z.string().trim().toLowerCase().regex(/^[a-z0-9-]+$/, 'Invalid topic').optional(),
+  })
+  .refine((b) => b.status || b.adminNote !== undefined || b.topicSlug, 'Nothing to update');
+
+const reviewPath = z.object({ reviewNote: z.string().trim().max(500).default('') });
 
 const topicSlug = z.object({
   slug: z.string().trim().toLowerCase().min(1).max(60).regex(/^[a-z0-9-]+$/, 'Invalid topic'),
@@ -131,7 +179,15 @@ const reportResource = z.object({
 const objectId = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid id') });
 
 module.exports = {
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+  changePassword,
   createTopic,
+  createTopicRequest,
+  listTopicRequests,
+  updateTopicRequest,
+  reviewPath,
   submitResource,
   reviewResource,
   reportResource,

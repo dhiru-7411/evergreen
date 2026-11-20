@@ -1,0 +1,128 @@
+{
+  "basedOnVersion": "8.3.8",
+  "intro": "For front-end developers who want to understand the tool that runs their dev server and builds their app. You'll scaffold a project, learn how Vite serves code in development and bundles it for production, configure it, and deploy the result, all on Vite 8, which replaced Rollup and esbuild with Rolldown and Oxc.",
+  "assumedKnowledge": [
+    "HTML, CSS and modern JavaScript with ES modules",
+    "Node.js 20.19+ or 22.12+ and npm",
+    "Using a terminal"
+  ],
+  "steps": [
+    {
+      "title": "Scaffold a project and run the dev server",
+      "goal": "Create a Vite project from a template and run it with instant hot updates.",
+      "explanation": "Run npm create vite@latest and pick a template (vanilla, React, Vue, Svelte, Solid and more, each with a TypeScript option). npm run dev starts the dev server; edits show up immediately through hot module replacement.",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "Vite needs Node.js 20.19+ or 22.12+. The React templates now include react-compiler variants.",
+      "sources": [
+        { "url": "https://vite.dev/guide/", "title": "Getting started" }
+      ]
+    },
+    {
+      "title": "Understand why Vite is fast",
+      "goal": "Explain how Vite serves native ES modules in development and bundles only for production.",
+      "explanation": "In development, Vite serves your source as native ES modules and transforms files on request, so startup doesn't wait for a full bundle. Dependencies are pre-bundled once so the browser doesn't load hundreds of small files.",
+      "prerequisites": [1],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/philosophy", "title": "Project philosophy" },
+        { "url": "https://vite.dev/guide/dep-pre-bundling", "title": "Dependency pre-bundling" }
+      ]
+    },
+    {
+      "title": "Use the built-in features",
+      "goal": "Import CSS, JSON, TypeScript and static assets directly, and use features like glob imports and CSS modules.",
+      "explanation": "Vite handles TypeScript, JSX, CSS (including CSS modules and preprocessors), JSON and assets out of the box. Importing an image gives you its URL; files in public/ are served as-is.",
+      "prerequisites": [1],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/features", "title": "Features" },
+        { "url": "https://vite.dev/guide/assets", "title": "Static asset handling" }
+      ]
+    },
+    {
+      "title": "Configure environment variables and modes",
+      "goal": "Give your app different settings for development and production without leaking secrets.",
+      "explanation": "Values in .env files are available on import.meta.env, but only variables prefixed with VITE_ reach client code. Modes (development, production or custom) pick which .env files load.",
+      "prerequisites": [3],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/env-and-mode", "title": "Env variables and modes" }
+      ]
+    },
+    {
+      "title": "Configure Vite and add plugins",
+      "goal": "Write a vite.config file, set common options and add official or community plugins.",
+      "explanation": "vite.config.js (or .ts) exports a config object made with defineConfig. Plugins add framework support and extra transforms; Vite plugins are based on the Rolldown plugin interface plus Vite-specific hooks.",
+      "prerequisites": [1],
+      "estimatedHours": 2,
+      "versionNote": "Vite 8 renamed several options: build.rollupOptions is now build.rolldownOptions, the esbuild option is now oxc, and optimizeDeps.esbuildOptions is now optimizeDeps.rolldownOptions. Most old names are converted automatically, but configs copied from older tutorials should be updated.",
+      "sources": [
+        { "url": "https://vite.dev/config/", "title": "Configuring Vite" },
+        { "url": "https://vite.dev/guide/using-plugins", "title": "Using plugins" },
+        { "url": "https://vite.dev/guide/migration.html", "title": "Migration from v7" }
+      ]
+    },
+    {
+      "title": "Use the CLI",
+      "goal": "Run the dev server, production build and local preview from the command line with the options you need.",
+      "explanation": "vite (or vite dev) starts the dev server, vite build produces the production bundle and vite preview serves the built output locally so you can check it before deploying.",
+      "prerequisites": [1],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/cli", "title": "Command line interface" }
+      ]
+    },
+    {
+      "title": "Build for production",
+      "goal": "Produce an optimized build, control browser targets and split code into chunks.",
+      "explanation": "vite build bundles, minifies and hashes your files for caching. Set build.target for the browsers you support, set a base path when the app isn't served from the root, and use dynamic import() to split rarely used code into separate chunks.",
+      "prerequisites": [5, 6],
+      "estimatedHours": 2,
+      "versionNote": "Vite 8 builds with Rolldown and minifies with Oxc (Lightning CSS for CSS). The default browser target is now Chrome/Edge 111, Firefox 114 and Safari 16.4. The object form of manualChunks was removed and the function form is deprecated in favor of Rolldown's codeSplitting option.",
+      "sources": [
+        { "url": "https://vite.dev/guide/build", "title": "Building for production" },
+        { "url": "https://vite.dev/guide/migration.html", "title": "Migration from v7" }
+      ]
+    },
+    {
+      "title": "Deploy a static site",
+      "goal": "Deploy a Vite build to a static host and handle client-side routing correctly.",
+      "explanation": "The dist folder is plain static files that any host can serve. The deployment guide covers platforms such as Netlify, Vercel, GitHub Pages and Cloudflare, including settings for base paths.",
+      "prerequisites": [7],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/static-deploy", "title": "Deploying a static site" }
+      ]
+    },
+    {
+      "title": "Integrate with a backend or render on the server",
+      "goal": "Serve Vite-built assets from your own backend, or render pages on the server with Vite's SSR support.",
+      "explanation": "Backend integration uses the build manifest to inject the right script and style tags from a server such as Express. Vite's SSR APIs are low-level building blocks; most apps get SSR through a framework built on Vite.",
+      "prerequisites": [7],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/backend-integration", "title": "Backend integration" },
+        { "url": "https://vite.dev/guide/ssr", "title": "Server-side rendering" }
+      ]
+    },
+    {
+      "title": "Troubleshoot and keep it fast",
+      "goal": "Diagnose common errors and slow dev-server startup in larger projects.",
+      "explanation": "The troubleshooting guide covers common CLI, dev-server, HMR and build errors. The performance guide explains how to audit plugins, reduce resolve work and avoid barrel files that slow down large apps.",
+      "prerequisites": [5],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vite.dev/guide/troubleshooting", "title": "Troubleshooting" },
+        { "url": "https://vite.dev/guide/performance", "title": "Performance" }
+      ]
+    }
+  ]
+}

@@ -46,6 +46,8 @@ const topicSchema = new mongoose.Schema(
     // Extra words that mean a page is about this topic ("Claude", "Expo"…),
     // used when checking community-submitted resources for relevance.
     keywords: { type: [{ type: String, trim: true }], default: [] },
+    // Official documentation sites. AI research is restricted to these.
+    docsDomains: { type: [{ type: String, trim: true, lowercase: true }], default: [] },
     live: {
       checkedAt: Date,
       packages: { type: [packageSnapshotSchema], default: [] },
