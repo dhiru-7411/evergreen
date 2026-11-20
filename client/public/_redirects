@@ -1,4 +1,4 @@
-/api/*        https://YOUR-API.onrender.com/api/:splat        200
-/sitemap.xml  https://YOUR-API.onrender.com/api/sitemap.xml   200
-/robots.txt   https://YOUR-API.onrender.com/api/robots.txt    200
+/api/*        https://evergreen-api-qvez.onrender.com/api/:splat        200
+/sitemap.xml  https://evergreen-api-qvez.onrender.com/api/sitemap.xml   200
+/robots.txt   https://evergreen-api-qvez.onrender.com/api/robots.txt    200
 /*  /index.html  200
