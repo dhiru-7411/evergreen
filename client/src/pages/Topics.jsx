@@ -69,6 +69,16 @@ const Topics = () => {
             </section>
           );
         })}
+
+      <section className="card request-cta">
+        <div>
+          <h2>Don't see what you want to learn?</h2>
+          <p className="faint">Request a topic or upvote what others asked for. The most-wanted topics come next.</p>
+        </div>
+        <Link to="/learn/requests" className="btn btn-primary">
+          Request a topic
+        </Link>
+      </section>
     </>
   );
 };

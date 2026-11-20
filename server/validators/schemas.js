@@ -115,6 +115,32 @@ const createTopic = z.object({
     .default([]),
 });
 
+const createTopicRequest = z.object({
+  name: z.string().trim().min(2).max(60),
+  category: z.enum(CATEGORY_IDS, 'Pick one of the listed areas. Evergreen only covers these.'),
+  packageName: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(214)
+    .regex(PACKAGE_NAME, 'Not a valid npm package name')
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
+  description: z.string().trim().max(500).default(''),
+});
+
+const listTopicRequests = z.object({
+  status: z.enum(['open', 'planned', 'done', 'declined']).optional(),
+});
+
+const updateTopicRequest = z
+  .object({
+    status: z.enum(['open', 'planned', 'done', 'declined']).optional(),
+    adminNote: z.string().trim().max(280).optional(),
+    topicSlug: z.string().trim().toLowerCase().regex(/^[a-z0-9-]+$/, 'Invalid topic').optional(),
+  })
+  .refine((b) => b.status || b.adminNote !== undefined || b.topicSlug, 'Nothing to update');
+
 const reviewPath = z.object({ reviewNote: z.string().trim().max(500).default('') });
 
 const topicSlug = z.object({
@@ -144,6 +170,9 @@ const objectId = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid id'
 
 module.exports = {
   createTopic,
+  createTopicRequest,
+  listTopicRequests,
+  updateTopicRequest,
   reviewPath,
   submitResource,
   reviewResource,

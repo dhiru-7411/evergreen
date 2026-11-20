@@ -1320,3 +1320,97 @@ section.card.topic-section {
 .path-preview {
   padding: 8px 0;
 }
+
+/* ---------- Topic requests ---------- */
+.request-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px;
+  margin-top: 8px;
+}
+
+.request-cta h2 {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+}
+
+.request-cta p {
+  margin: 0;
+}
+
+.request-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.request-area {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.request-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.request-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.request-body h3,
+.request-body p {
+  margin: 0;
+}
+
+.request-body .row {
+  flex-wrap: wrap;
+}
+
+.vote {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 2px;
+  min-width: 52px;
+  padding: 8px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  cursor: pointer;
+}
+
+.vote:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.vote.voted {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.vote:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.admin-note {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--brand-soft);
+  font-size: 0.9rem;
+}

@@ -7,6 +7,7 @@ const { refreshTopic, isStale } = require('../services/topicService');
 const { CATEGORIES } = require('../config/categories');
 const { approvedResources, ownResources } = require('./resourceController');
 const { publicPath } = require('./pathController');
+const { closeRequestsFor } = require('./topicRequestController');
 const LearningPath = require('../models/LearningPath');
 
 const RELATED_POST_LIMIT = 20;
@@ -143,6 +144,7 @@ const createTopic = async (req, res) => {
     createdBy: req.user.id,
   });
   await refreshTopic(topic);
+  await closeRequestsFor(topic);
   res.status(201).json(summarize(topic));
 };
 

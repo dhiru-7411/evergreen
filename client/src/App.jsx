@@ -19,6 +19,7 @@ const Topics = lazy(() => import('./pages/Topics'));
 const TopicDetail = lazy(() => import('./pages/TopicDetail'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
 const ReviewQueue = lazy(() => import('./pages/ReviewQueue'));
+const TopicRequests = lazy(() => import('./pages/TopicRequests'));
 
 const protect = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/learn" element={<Topics />} />
             <Route path="/learn/new" element={protect(<NewTopic />)} />
             <Route path="/learn/review" element={protect(<ReviewQueue />)} />
+            <Route path="/learn/requests" element={<TopicRequests />} />
             <Route path="/learn/:slug" element={<TopicDetail />} />
             <Route path="/inbox" element={protect(<Inbox />)} />
             <Route path="/create" element={protect(<CreatePost />)} />
