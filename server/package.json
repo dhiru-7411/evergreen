@@ -4,7 +4,7 @@
   "description": "Evergreen API: a blog that knows when its posts go stale",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "node --watch index.js",
     "start": "node index.js",
     "test": "node --test --test-concurrency=1 \"tests/*.test.js\"",
     "seed": "node scripts/seed.js",
@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "mongodb-memory-server": "^11.3.0",
-    "nodemon": "^3.1.14",
     "supertest": "^7.3.1"
   }
 }
