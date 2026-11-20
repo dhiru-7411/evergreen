@@ -73,7 +73,7 @@ const History = () => {
                   <b style={{ fontWeight: 500 }}>{rev.note}</b>
                   <br />
                   <span className="faint">
-                    <UserLink user={rev.editor} /> · {timeAgo(rev.createdAt)}
+                    {rev.editor?.username ? `@${rev.editor.username}` : '@deleted'} · {timeAgo(rev.createdAt)}
                     {rev.fixRequest && ' · reader fix'}
                   </span>
                 </span>

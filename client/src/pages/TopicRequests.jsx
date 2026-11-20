@@ -47,7 +47,7 @@ const RequestForm = ({ categories, onCreated }) => {
 
   return (
     <form className="card suggest-form" onSubmit={submit}>
-      <h3>Request a topic</h3>
+      <h2 className="form-title">Request a topic</h2>
       <p className="faint">
         Evergreen covers the core skills for building software. Ask for a library, framework or tool in one of these
         areas, and upvote other requests you'd like to see.

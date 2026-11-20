@@ -31,11 +31,14 @@ const protect = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 function App() {
   return (
     <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <Navbar />
       <Suspense fallback={null}>
         <VerifyBanner />
       </Suspense>
-      <main className="container">
+      <main className="container" id="main" tabIndex={-1}>
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Home />} />

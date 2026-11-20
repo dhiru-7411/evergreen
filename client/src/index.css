@@ -4,7 +4,7 @@
   --surface: #fffefa;
   --ink: #18241e;
   --ink-soft: #4d5a53;
-  --ink-faint: #7d8882;
+  --ink-faint: #5a625d;
   --line: #e2ddd0;
   --line-strong: #cfc8b8;
   --brand: #1f4d3a;
@@ -12,13 +12,13 @@
   --brand-soft: #e3efe7;
   --focus: #2f7d5b;
 
-  --fresh: #2f7d5b;
+  --fresh: #2d7757;
   --fresh-bg: #e1f1e7;
-  --aging: #a76a0b;
+  --aging: #965f0a;
   --aging-bg: #fbf0d9;
   --stale: #b1442a;
   --stale-bg: #fae4dd;
-  --untracked: #6b746f;
+  --untracked: #626a65;
   --untracked-bg: #ebeae4;
 
   --add-bg: #e3f3e8;
@@ -41,7 +41,7 @@
     --surface: #18201c;
     --ink: #e7ece9;
     --ink-soft: #aab5af;
-    --ink-faint: #7c8882;
+    --ink-faint: #929c97;
     --line: #2a3530;
     --line-strong: #3a4741;
     --brand: #7cc79f;
@@ -194,6 +194,7 @@ main.container {
 
 .nav-link {
   position: relative;
+  white-space: nowrap;
   padding: 6px 10px;
   border-radius: 8px;
   text-decoration: none;
@@ -508,7 +509,7 @@ main.container {
   border-color: var(--untracked);
 }
 
-.report h3 {
+.report h2 {
   font-size: 1.05rem;
   margin: 0 0 4px;
 }
@@ -692,8 +693,14 @@ main.container {
   line-height: 1.6;
 }
 
-.prose pre code.hljs {
+.prose pre code.hljs,
+.prose pre > code {
+  display: block;
   padding: 16px 18px;
+  /* The focusable <pre> scrolls, not the inner <code> (highlight.js sets it). */
+  overflow-x: visible;
+  width: max-content;
+  min-width: 100%;
 }
 
 .prose blockquote {
@@ -881,7 +888,8 @@ main.container {
     grid-template-columns: 1fr 80px auto;
   }
 
-  .nav-link.hide-sm {
+  .nav-link.hide-sm,
+  .btn.hide-sm {
     display: none;
   }
 
@@ -987,6 +995,13 @@ section.card.topic-section {
 .pkg-links {
   display: inline-flex;
   gap: 10px;
+}
+
+/* Comfortable tap targets (WCAG 2.2 asks for at least 24px). */
+.pkg-links a {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
 }
 
 .alt-list {
@@ -1457,4 +1472,78 @@ section.card.topic-section {
   font-size: 0.9rem;
   padding: 10px 0;
   border-bottom: 1px solid color-mix(in srgb, var(--aging) 30%, transparent);
+}
+
+.form-title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+/* ---------- Small screens ---------- */
+/* Grid and flex children default to min-width: auto, which lets wide content
+   (code blocks, diffs) stretch the whole layout past the screen. */
+.layout-2 > *,
+main.container > * {
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .nav-inner {
+    gap: 6px;
+  }
+
+  .nav-links {
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding: 6px 7px;
+  }
+
+  /* Logo only; the name stays available to screen readers. */
+  .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .brand img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Visible only when focused from the keyboard. */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 20;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 10px;
+}
+
+main:focus {
+  outline: none;
+}
+
+.account-head {
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.account-head .row {
+  flex-wrap: wrap;
 }
