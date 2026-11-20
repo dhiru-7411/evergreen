@@ -83,7 +83,7 @@ const TOPICS = [
   },
   {
     name: 'TypeScript',
-    docsDomains: ['typescriptlang.org'],
+    docsDomains: ['typescriptlang.org', 'devblogs.microsoft.com'],
     category: 'tooling',
     summary: 'JavaScript with static types: catches bugs before they run and powers editor tooling.',
     packages: ['typescript'],

@@ -206,7 +206,7 @@ export const PathAdmin = ({ topic, onPublished }) => {
                   </ul>
                 </div>
               ) : (
-                <p className="faint">✓ Every step cites an official page Claude actually opened.</p>
+                <p className="faint">✓ Every step cites an official page that was opened and confirmed during research.</p>
               )}
               <p className="faint">
                 Read each step against its sources. Unverified links are hidden from learners automatically.

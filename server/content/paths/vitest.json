@@ -1,0 +1,133 @@
+{
+  "basedOnVersion": "5.1.1",
+  "intro": "For JavaScript and TypeScript developers who want to test their code with Vitest 5, the Vite-powered test runner with a Jest-compatible API. You'll write and run tests, mock dependencies, measure coverage, test components in a real browser and organise larger test suites.",
+  "assumedKnowledge": [
+    "JavaScript or TypeScript with ES modules and async/await",
+    "Node.js 22.12 or newer and npm",
+    "Helpful: a Vite-based project (Vitest works without one too)"
+  ],
+  "steps": [
+    {
+      "title": "Install Vitest and write your first test",
+      "goal": "Add Vitest to a project, write a test with test and expect, and run it in watch mode.",
+      "explanation": "Install vitest as a dev dependency, add a \"test\": \"vitest\" script, and put tests in files ending in .test.js or .spec.js. Vitest reruns affected tests as you save.",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "Vitest 5 requires Node.js 22.12+ and Vite 6.4+; Vite is now a peer dependency.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/", "title": "Getting started" },
+        { "url": "https://vitest.dev/guide/migration/", "title": "Migrating to Vitest 5" }
+      ]
+    },
+    {
+      "title": "Learn the core features and assertions",
+      "goal": "Structure tests with describe, test and hooks, and check results with expect matchers.",
+      "explanation": "Vitest shares Vite's config and transforms, so TypeScript and JSX work without extra setup. Group tests with describe, use beforeEach/afterEach for setup, and use the expect API for assertions, including async ones.",
+      "prerequisites": [1],
+      "estimatedHours": 2,
+      "versionNote": "In Vitest 5, unawaited expect(...).resolves and .rejects make the test fail, and toThrow('') matches any error message.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/features", "title": "Features" },
+        { "url": "https://vitest.dev/guide/migration/", "title": "Migrating to Vitest 5" }
+      ]
+    },
+    {
+      "title": "Run the tests you want from the CLI",
+      "goal": "Run all tests, a single file or tests matching a name, and use CI-friendly run mode.",
+      "explanation": "vitest starts watch mode in development and vitest run runs once (as in CI). Filter by file path or by test name with -t, and use .only and .skip while working.",
+      "prerequisites": [1],
+      "estimatedHours": 1,
+      "versionNote": "Vitest 5 joins suite and test names with ' > ' when matching -t / testNamePattern, so name filters written for older versions may need updating.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/cli", "title": "Command line interface" },
+        { "url": "https://vitest.dev/guide/filtering", "title": "Test filtering" }
+      ]
+    },
+    {
+      "title": "Mock functions, modules and timers",
+      "goal": "Replace dependencies with mocks and spies, mock whole modules, and control time with fake timers.",
+      "explanation": "vi.fn() and vi.spyOn() record calls and return values; vi.mock() replaces a module; vi.useFakeTimers() lets you advance time instantly. Mock what is slow or unpredictable, such as network calls and dates.",
+      "prerequisites": [2],
+      "estimatedHours": 3,
+      "versionNote": "Vitest 5 clears mock call history before each test by default (clearMocks: true). vi.mock, vi.unmock and vi.hoisted must be at the top level of the file; calling them inside functions or blocks now throws. Fake timers also mock Temporal.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/mocking", "title": "Mocking" },
+        { "url": "https://vitest.dev/guide/mocking/modules", "title": "Mocking modules" },
+        { "url": "https://vitest.dev/guide/mocking/timers", "title": "Mocking timers" }
+      ]
+    },
+    {
+      "title": "Use snapshots wisely",
+      "goal": "Capture output with snapshot and inline snapshot tests, and review changes deliberately.",
+      "explanation": "Snapshots store a serialized value and fail when it changes. They're useful for large, stable outputs; review snapshot updates like code rather than accepting them blindly.",
+      "prerequisites": [2],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vitest.dev/guide/snapshot", "title": "Snapshot" }
+      ]
+    },
+    {
+      "title": "Choose a test environment and use test context",
+      "goal": "Run tests in Node or a simulated DOM, and use fixtures from the test context for shared setup.",
+      "explanation": "The environment option picks node, jsdom or happy-dom per project or file. The test context gives each test helpers and lets you define reusable fixtures with test.extend.",
+      "prerequisites": [2],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vitest.dev/guide/environment", "title": "Test environment" },
+        { "url": "https://vitest.dev/guide/test-context", "title": "Test context" }
+      ]
+    },
+    {
+      "title": "Measure coverage",
+      "goal": "Generate coverage reports and set thresholds that fail the build when coverage drops.",
+      "explanation": "Enable coverage with the v8 or istanbul provider to see which lines your tests run, and set thresholds in config so coverage can't silently fall.",
+      "prerequisites": [3],
+      "estimatedHours": 1,
+      "versionNote": "In Vitest 5, coverage include/exclude patterns match paths relative to the project root, and glob thresholds no longer inherit perFile.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/coverage", "title": "Coverage" },
+        { "url": "https://vitest.dev/guide/migration/", "title": "Migrating to Vitest 5" }
+      ]
+    },
+    {
+      "title": "Test components in a real browser",
+      "goal": "Run component tests in real browsers with Browser Mode instead of a simulated DOM.",
+      "explanation": "Browser Mode runs tests in an actual browser through a provider such as Playwright, so layout, events and browser APIs behave like production. Locators find elements the way users do.",
+      "prerequisites": [6],
+      "estimatedHours": 3,
+      "versionNote": "In Vitest 5, browser locators match exactly by default, and render is async in vitest-browser-vue and vitest-browser-svelte.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/browser/why", "title": "Why Browser Mode" },
+        { "url": "https://vitest.dev/guide/browser/", "title": "Browser Mode: getting started" },
+        { "url": "https://vitest.dev/guide/migration/", "title": "Migrating to Vitest 5" }
+      ]
+    },
+    {
+      "title": "Organise larger suites with projects and reporters",
+      "goal": "Run different configurations (for example unit and browser tests) as projects, and choose reporters for CI.",
+      "explanation": "Projects let one Vitest run cover several configurations or packages. Reporters control output: readable in the terminal, JSON or JUnit files for CI, or the HTML report.",
+      "prerequisites": [3, 6],
+      "estimatedHours": 2,
+      "versionNote": "In Vitest 5, inline projects inherit the root config by default, json and junit reporters write to files rather than stdout, and output goes under .vitest/.",
+      "sources": [
+        { "url": "https://vitest.dev/guide/projects", "title": "Test projects" },
+        { "url": "https://vitest.dev/guide/reporters", "title": "Reporters" }
+      ]
+    },
+    {
+      "title": "Debug, speed up and migrate from Jest",
+      "goal": "Debug failing tests, fix common errors, make large suites faster, and move an existing Jest suite to Vitest.",
+      "explanation": "Debug tests in your editor or browser devtools, check the common-errors guide when setup fails, and tune pools and isolation for speed. Vitest's API is close to Jest's, and the Jest migration guide lists the differences.",
+      "prerequisites": [4, 9],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://vitest.dev/guide/debugging", "title": "Debugging" },
+        { "url": "https://vitest.dev/guide/improving-performance", "title": "Improving performance" },
+        { "url": "https://vitest.dev/guide/migration/jest", "title": "Migrating from Jest" }
+      ]
+    }
+  ]
+}

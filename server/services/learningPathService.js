@@ -199,7 +199,7 @@ function finalizeSubmission(submission, researched, domains) {
       if (!s.verified) {
         warnings.push(
           onAllowedDomain(s.url, domains)
-            ? `Step ${n}: ${s.url} was not among the pages Claude opened; it may not exist.`
+            ? `Step ${n}: ${s.url} could not be confirmed as a real page during research; it may not exist.`
             : `Step ${n}: ${s.url} is not on an official docs site (${domains.join(', ')}).`
         );
       }

@@ -15,9 +15,28 @@ const Topic = require('../models/Topic');
 const User = require('../models/User');
 const LearningPath = require('../models/LearningPath');
 const { safeFetchPage } = require('../services/safeFetch');
+const { extractText } = require('../services/resourceChecker');
 const { finalizeSubmission, docsDomainsFor } = require('../services/learningPathService');
 
 const DIR = path.join(__dirname, '..', 'content', 'paths');
+
+const titleOf = (res) => (res.ok && /html/i.test(res.contentType || '') ? extractText(res.body).title : '');
+
+// Some docs sites answer 200 with a generic page for URLs that don't exist
+// ("soft 404"). Learn what that page looks like per host by requesting a
+// deliberately fake URL, so a made-up link can't pass as verified.
+const notFoundTitles = new Map();
+async function softNotFoundTitle(url) {
+  // Probe the same folder as the link: some sites 404 at the root but serve
+  // a generic 200 page for anything under /docs/.
+  const probe = new URL(`evergreen-link-check-${Date.now()}`, url);
+  const dir = probe.href.slice(0, probe.href.lastIndexOf('/') + 1);
+  if (!notFoundTitles.has(dir)) {
+    const res = await safeFetchPage(probe.href).catch(() => ({ ok: false }));
+    notFoundTitles.set(dir, res.ok ? titleOf(res) : null);
+  }
+  return notFoundTitles.get(dir);
+}
 
 async function importOne(slug, author) {
   const file = path.join(DIR, `${slug}.json`);
@@ -30,8 +49,16 @@ async function importOne(slug, author) {
   const opened = new Set();
   for (const url of urls) {
     const res = await safeFetchPage(url).catch(() => ({ ok: false }));
-    if (res.ok) opened.add(url);
-    else console.log(`    ✗ could not open ${url}`);
+    if (!res.ok) {
+      console.log(`    ✗ could not open ${url}`);
+      continue;
+    }
+    const fake = await softNotFoundTitle(url);
+    if (fake !== null && titleOf(res) === fake) {
+      console.log(`    ✗ ${url} looks like the site's "not found" page`);
+      continue;
+    }
+    opened.add(url);
   }
 
   const fields = finalizeSubmission(data, opened, domains);

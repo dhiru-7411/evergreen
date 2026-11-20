@@ -1,0 +1,126 @@
+{
+  "basedOnVersion": "1.11.0",
+  "intro": "For JavaScript and TypeScript developers who want to add AI features to their apps by calling large language models through an official SDK. Using Claude and the @anthropic-ai/sdk package as the example, you'll go from a first API call to multi-turn conversations, structured output, tools, streaming, caching and evaluation, with today's API conventions rather than patterns from early LLM tutorials.",
+  "assumedKnowledge": [
+    "JavaScript or TypeScript with async/await",
+    "Node.js and npm",
+    "Calling HTTP APIs and keeping secrets in environment variables"
+  ],
+  "steps": [
+    {
+      "title": "Make your first API call",
+      "goal": "Create an API key, install the SDK and send a message to Claude from Node.js.",
+      "explanation": "Install @anthropic-ai/sdk, set ANTHROPIC_API_KEY in your environment and call client.messages.create with a model, max_tokens and a messages array. API usage is billed per token, separately from any chat subscription, so set a spend limit in the Console first.",
+      "prerequisites": [],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/get-started", "title": "Quickstart" },
+        { "url": "https://platform.claude.com/docs/en/intro", "title": "Intro to Claude" }
+      ]
+    },
+    {
+      "title": "Keep credentials safe",
+      "goal": "Store and scope API keys correctly and keep them out of code, front ends and prompts.",
+      "explanation": "Keys belong on the server, in environment variables or a secrets manager, never in client-side code or source control. Set expirations and rotate keys; some deployments can use workload identity instead of static keys.",
+      "prerequisites": [1],
+      "estimatedHours": 1,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/manage-claude/authentication", "title": "Authentication" }
+      ]
+    },
+    {
+      "title": "Understand the Messages API",
+      "goal": "Build multi-turn conversations, use system prompts, and handle every stop reason.",
+      "explanation": "The API is stateless: you send the whole conversation each time as alternating user and assistant messages. A system prompt sets behaviour. Always check stop_reason (end_turn, max_tokens, tool_use, refusal and others) before using the response.",
+      "prerequisites": [1],
+      "estimatedHours": 2,
+      "versionNote": "Current models no longer accept assistant prefills (ending the messages array with a partial assistant reply) and return an error. Use structured outputs or system prompt instructions to control the response format instead.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages", "title": "Using the Messages API" }
+      ]
+    },
+    {
+      "title": "Choose a model and control cost",
+      "goal": "Pick a model for the job and understand how tokens, effort and model choice drive cost and quality.",
+      "explanation": "Models differ in capability, speed and price per million input and output tokens. The models overview compares them; start with the recommended default and move to a cheaper model only where your tests show quality holds.",
+      "prerequisites": [3],
+      "estimatedHours": 1,
+      "versionNote": "Model IDs change with each generation. Tutorials hard-coding older model names may point at retired models, so check the models overview for current IDs.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/models/overview", "title": "Models overview" }
+      ]
+    },
+    {
+      "title": "Write effective prompts",
+      "goal": "Write clear, specific prompts with context, examples and an explicit output format.",
+      "explanation": "Most quality problems are prompt problems. Be explicit about the task, audience and format, give relevant context and examples, and test prompts against real inputs rather than one example.",
+      "prerequisites": [3],
+      "estimatedHours": 3,
+      "versionNote": "Prompts tuned for older models are often too prescriptive for current ones; re-test them when you change models.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview", "title": "Prompt engineering overview" }
+      ]
+    },
+    {
+      "title": "Get structured output",
+      "goal": "Make the model return JSON that matches a schema your code can rely on.",
+      "explanation": "Structured outputs constrain the response to a JSON schema, so you can parse it without guessing. With the TypeScript SDK you can define the schema with Zod and get a typed, parsed result.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "Use output_config.format for structured outputs; the older output_format parameter is deprecated.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs", "title": "Structured outputs" }
+      ]
+    },
+    {
+      "title": "Let the model call your code with tools",
+      "goal": "Define tools, run the ones the model asks for, and send results back in a loop.",
+      "explanation": "Tool use lets the model request actions such as looking up an order or querying a database. Your code runs the tool and returns the result; the SDK's tool runner can handle the loop for you. Server-side tools like web search run on Anthropic's side.",
+      "prerequisites": [3, 6],
+      "estimatedHours": 4,
+      "versionNote": "On the newest models, forcing a specific tool with tool_choice any or tool returns an error. Use tool_choice auto with a clear instruction, and strict tool schemas to guarantee valid arguments.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", "title": "Tool use overview" },
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/overview", "title": "Features overview" }
+      ]
+    },
+    {
+      "title": "Stream responses and use thinking",
+      "goal": "Show output as it's generated and let the model reason before answering on harder tasks.",
+      "explanation": "Streaming sends text as it's produced, which keeps chat UIs responsive and avoids timeouts on long responses; the SDK's finalMessage() still gives you the complete message. Thinking lets the model reason first; on current models it adapts to the task and you tune depth with the effort setting.",
+      "prerequisites": [3],
+      "estimatedHours": 2,
+      "versionNote": "Fixed thinking budgets (budget_tokens) are replaced by adaptive thinking plus effort on current models, and sending a budget returns an error on the newest ones.",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/streaming", "title": "Streaming messages" },
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking", "title": "Adaptive thinking" }
+      ]
+    },
+    {
+      "title": "Cut cost and latency with prompt caching",
+      "goal": "Cache long, repeated prompt prefixes so repeat requests are cheaper and faster.",
+      "explanation": "When many requests share a long beginning (instructions, documents, tool definitions), caching it means later requests read it at a fraction of the input price. Keep stable content first and changing content last, and check the cache-read token counts to confirm it works.",
+      "prerequisites": [4],
+      "estimatedHours": 2,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching", "title": "Prompt caching" }
+      ]
+    },
+    {
+      "title": "Test, evaluate and handle failures in production",
+      "goal": "Measure quality with test cases, and handle rate limits, errors and refusals gracefully.",
+      "explanation": "Define what good output looks like and test against a set of real examples before and after every prompt or model change. In production, catch the SDK's typed errors, retry rate limits and server errors (the SDK retries some automatically), and handle refusal stop reasons.",
+      "prerequisites": [5, 7],
+      "estimatedHours": 3,
+      "versionNote": "",
+      "sources": [
+        { "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests", "title": "Create strong empirical evaluations" },
+        { "url": "https://platform.claude.com/docs/en/api/errors", "title": "Errors" },
+        { "url": "https://platform.claude.com/docs/en/api/rate-limits", "title": "Rate limits" }
+      ]
+    }
+  ]
+}
