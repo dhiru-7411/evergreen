@@ -1,6 +1,8 @@
 // Sends account emails (verification, password reset).
 //
 //   SMTP_URL    e.g. smtps://USER:PASS@smtp-relay.brevo.com:465 (any SMTP provider)
+//   or, easier to paste (no URL-encoding of "@" in logins):
+//   SMTP_HOST, SMTP_PORT (465 = TLS, 587 = STARTTLS), SMTP_USER, SMTP_PASS
 //   MAIL_FROM   e.g. "Evergreen <you@example.com>" (must be a sender your provider allows)
 //   APP_URL     public address of the site, used in links (default: first CLIENT_URL)
 //
@@ -12,11 +14,24 @@ const nodemailer = require('nodemailer');
 let transport = null;
 const outbox = []; // used by tests and the log mailer
 
-const configured = () => Boolean(process.env.SMTP_URL);
+const configured = () =>
+  Boolean(process.env.SMTP_URL || (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS));
+
+// Transport options from SMTP_URL, or from the separate SMTP_* settings.
+function transportConfig() {
+  if (process.env.SMTP_URL) return process.env.SMTP_URL;
+  const port = Number(process.env.SMTP_PORT) || 587;
+  return {
+    host: process.env.SMTP_HOST.trim(),
+    port,
+    secure: port === 465, // 465 is TLS from the start; 587 upgrades with STARTTLS
+    auth: { user: process.env.SMTP_USER.trim(), pass: process.env.SMTP_PASS.trim() },
+  };
+}
 
 function getTransport() {
   if (!configured()) return null;
-  transport ??= nodemailer.createTransport(process.env.SMTP_URL);
+  transport ??= nodemailer.createTransport(transportConfig());
   return transport;
 }
 
@@ -86,6 +101,7 @@ module.exports = {
   sendPasswordChanged,
   verificationRequired,
   configured,
+  transportConfig,
   outbox,
   appUrl,
 };

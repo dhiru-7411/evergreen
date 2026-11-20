@@ -23,8 +23,15 @@ services:
         generateValue: true
       - key: CLIENT_URL
         sync: false # your Vercel/Netlify URL, e.g. https://evergreen.vercel.app (checked on every write request)
-      - key: SMTP_URL
-        sync: false # e.g. smtps://LOGIN:KEY@smtp-relay.brevo.com:465 (free tier)
+      # Account emails (verification, password reset), e.g. Brevo's free SMTP
+      - key: SMTP_HOST
+        sync: false # smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false # the SMTP login Brevo shows, e.g. 9abc123@smtp-brevo.com
+      - key: SMTP_PASS
+        sync: false # the SMTP key Brevo generates
       - key: MAIL_FROM
         sync: false # e.g. Evergreen <you@example.com>
       - key: APP_URL
