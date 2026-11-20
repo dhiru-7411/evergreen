@@ -16,7 +16,9 @@ async function main() {
   const role = flag === '--revoke' ? 'user' : 'admin';
 
   await mongoose.connect(process.env.MONGO_URI);
-  const user = await User.findOneAndUpdate({ username }, { role }, { new: true });
+  // Usernames keep their capitalisation, so match case-insensitively.
+  const exact = new RegExp(`^${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
+  const user = await User.findOneAndUpdate({ username: exact }, { role }, { new: true });
   if (!user) {
     console.error(`No user named "${username}".`);
     process.exitCode = 1;

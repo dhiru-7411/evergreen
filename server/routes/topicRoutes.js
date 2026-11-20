@@ -4,10 +4,11 @@ const verifyToken = require('../middleware/verifyToken');
 const { optionalAuth } = require('../middleware/verifyToken');
 const requireAdmin = require('../middleware/requireAdmin');
 const validate = require('../middleware/validate');
-const { submitLimiter } = require('../middleware/rateLimits');
+const { submitLimiter, aiLimiter } = require('../middleware/rateLimits');
 const schemas = require('../validators/schemas');
 const { listTopics, listCategories, getTopic, createTopic, deleteTopic } = require('../controllers/topicController');
 const { submitResource } = require('../controllers/resourceController');
+const paths = require('../controllers/pathController');
 
 const slug = validate(schemas.topicSlug, 'params');
 
@@ -17,5 +18,8 @@ router.post('/', verifyToken, requireAdmin, validate(schemas.createTopic), creat
 router.get('/:slug', slug, optionalAuth, getTopic);
 router.delete('/:slug', verifyToken, requireAdmin, slug, deleteTopic);
 router.post('/:slug/resources', verifyToken, submitLimiter, slug, validate(schemas.submitResource), submitResource);
+
+router.get('/:slug/paths', verifyToken, requireAdmin, slug, paths.listForTopic);
+router.post('/:slug/paths', verifyToken, requireAdmin, aiLimiter, slug, paths.generate);
 
 module.exports = router;

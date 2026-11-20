@@ -103,7 +103,19 @@ const createTopic = z.object({
     .refine((a) => new Set(a.map((x) => x.name)).size === a.length, 'Duplicate alternative')
     .default([]),
   keywords: z.array(z.string().trim().min(2).max(40)).max(10, 'At most 10 keywords').default([]),
+  docsDomains: z
+    .array(
+      z
+        .string()
+        .trim()
+        .toLowerCase()
+        .regex(/^([a-z0-9-]+\.)+[a-z]{2,}$/, 'Use a bare domain like react.dev')
+    )
+    .max(5, 'At most 5 docs domains')
+    .default([]),
 });
+
+const reviewPath = z.object({ reviewNote: z.string().trim().max(500).default('') });
 
 const topicSlug = z.object({
   slug: z.string().trim().toLowerCase().min(1).max(60).regex(/^[a-z0-9-]+$/, 'Invalid topic'),
@@ -132,6 +144,7 @@ const objectId = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid id'
 
 module.exports = {
   createTopic,
+  reviewPath,
   submitResource,
   reviewResource,
   reportResource,

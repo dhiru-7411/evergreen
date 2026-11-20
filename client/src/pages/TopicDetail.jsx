@@ -5,6 +5,7 @@ import { useFetch } from '../hooks/useFetch';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import Resources from '../components/Resources';
+import { LearningPathSection, PathAdmin } from '../components/LearningPath';
 import { Loading, ErrorBox, Empty } from '../components/Status';
 import { compactNumber, formatDate, timeAgo } from '../utils/format';
 
@@ -237,10 +238,8 @@ const TopicDetail = () => {
         )}
       </section>
 
-      <section className="topic-section">
-        <h2 className="section-title">Learning path</h2>
-        <Empty>A step-by-step path for {topic.name}, built from the official docs, is coming soon.</Empty>
-      </section>
+      <LearningPathSection topic={topic} />
+      {user?.role === 'admin' && <PathAdmin topic={topic} onPublished={reload} />}
 
       <Resources topic={topic} onChange={reload} />
 

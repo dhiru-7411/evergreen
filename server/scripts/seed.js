@@ -21,6 +21,7 @@ const DEMO_PASSWORD = 'evergreen-demo';
 const TOPICS = [
   {
     name: 'React',
+    docsDomains: ['react.dev'],
     category: 'frontend',
     summary: 'The most widely used library for building user interfaces with components.',
     packages: ['react', 'react-dom'],
@@ -33,6 +34,7 @@ const TOPICS = [
   },
   {
     name: 'Express',
+    docsDomains: ['expressjs.com'],
     category: 'backend',
     summary: 'Minimal, unopinionated web framework for building APIs and servers in Node.js.',
     packages: ['express'],
@@ -45,6 +47,7 @@ const TOPICS = [
   },
   {
     name: 'Mongoose',
+    docsDomains: ['mongoosejs.com'],
     category: 'databases',
     summary: 'Schemas, validation and models for working with MongoDB from Node.js.',
     packages: ['mongoose'],
@@ -56,6 +59,7 @@ const TOPICS = [
   },
   {
     name: 'Vite',
+    docsDomains: ['vite.dev'],
     category: 'tooling',
     summary: 'Fast dev server and build tool for modern front-end projects.',
     packages: ['vite'],
@@ -67,6 +71,7 @@ const TOPICS = [
   },
   {
     name: 'Next.js',
+    docsDomains: ['nextjs.org'],
     category: 'fullstack',
     summary: 'Full-stack React framework with routing, server rendering and server components.',
     packages: ['next'],
@@ -78,6 +83,7 @@ const TOPICS = [
   },
   {
     name: 'TypeScript',
+    docsDomains: ['typescriptlang.org'],
     category: 'tooling',
     summary: 'JavaScript with static types: catches bugs before they run and powers editor tooling.',
     packages: ['typescript'],
@@ -87,6 +93,7 @@ const TOPICS = [
   },
   {
     name: 'Vitest',
+    docsDomains: ['vitest.dev'],
     category: 'testing',
     summary: 'Fast unit test runner built on Vite, with a Jest-compatible API.',
     packages: ['vitest'],
@@ -98,6 +105,7 @@ const TOPICS = [
   },
   {
     name: 'React Native',
+    docsDomains: ['reactnative.dev', 'docs.expo.dev'],
     category: 'mobile',
     summary: 'Build native iOS and Android apps with React.',
     packages: ['react-native', 'expo'],
@@ -109,6 +117,7 @@ const TOPICS = [
   },
   {
     name: 'Building with LLMs',
+    docsDomains: ['platform.claude.com', 'docs.claude.com'],
     category: 'ai',
     summary: 'Official SDKs and frameworks for calling large language models from JavaScript.',
     packages: ['@anthropic-ai/sdk'],

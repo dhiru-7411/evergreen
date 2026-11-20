@@ -1218,3 +1218,105 @@ section.card.topic-section {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Learning paths ---------- */
+.path-intro {
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  max-width: 70ch;
+}
+
+.path-steps {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.path-step {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+}
+
+.path-step h3,
+.path-step p {
+  margin: 0;
+}
+
+.path-step h3 {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-num {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font: 600 0.85rem var(--mono);
+}
+
+.step-goal {
+  font-weight: 500;
+}
+
+.version-note {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--aging-bg);
+  color: var(--aging);
+  font-size: 0.9rem;
+}
+
+.step-sources {
+  overflow-wrap: anywhere;
+}
+
+.verified {
+  color: var(--fresh);
+}
+
+.unverified {
+  color: var(--stale);
+}
+
+.path-credit {
+  font-size: 0.85rem;
+}
+
+.path-admin {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+  margin-bottom: 32px;
+  border-style: dashed;
+}
+
+.path-admin h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.path-version {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.path-version .alert ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.path-preview {
+  padding: 8px 0;
+}
