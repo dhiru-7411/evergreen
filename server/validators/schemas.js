@@ -35,6 +35,16 @@ const register = z.object({
   password: z.string().min(8, 'Use at least 8 characters').max(128),
 });
 
+const password = z.string().min(8, 'Use at least 8 characters').max(128);
+const emailToken = z.string().trim().min(20).max(200);
+
+const verifyEmail = z.object({ token: emailToken });
+const forgotPassword = z.object({ email: z.email().trim().toLowerCase() });
+const resetPassword = z.object({ token: emailToken, password });
+const changePassword = z
+  .object({ currentPassword: z.string().min(1).max(128), newPassword: password })
+  .refine((b) => b.currentPassword !== b.newPassword, { message: 'Choose a different password', path: ['newPassword'] });
+
 const login = z.object({
   email: z.email().trim().toLowerCase(),
   password: z.string().min(1).max(128),
@@ -169,6 +179,10 @@ const reportResource = z.object({
 const objectId = z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i, 'Invalid id') });
 
 module.exports = {
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+  changePassword,
   createTopic,
   createTopicRequest,
   listTopicRequests,

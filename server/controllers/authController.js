@@ -2,12 +2,16 @@ const User = require('../models/User');
 const Session = require('../models/Session');
 const HttpError = require('../utils/httpError');
 const sessions = require('../services/sessions');
+const mailer = require('../services/mailer');
+const { sendVerificationEmail } = require('./accountController');
 
 const publicUser = (user) => ({
   id: user._id,
   username: user.username,
   email: user.email,
   role: user.role ?? 'user',
+  emailVerified: Boolean(user.emailVerifiedAt),
+  verificationRequired: mailer.verificationRequired(),
 });
 
 const register = async (req, res) => {
@@ -18,6 +22,8 @@ const register = async (req, res) => {
 
   const user = await User.create({ username, email, password });
   await sessions.startSession(req, res, user._id);
+  // A mail outage shouldn't block sign-up; they can resend from their account page.
+  await sendVerificationEmail(user).catch((err) => console.error('[mail] verification failed:', err.message));
   res.status(201).json({ user: publicUser(user) });
 };
 

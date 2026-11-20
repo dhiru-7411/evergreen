@@ -26,6 +26,11 @@ const Login = () => {
     <div className="card auth-card">
       <h1 style={{ fontSize: '1.6rem' }}>Welcome back</h1>
       <form onSubmit={handleSubmit}>
+        {location.state?.notice && !error && (
+          <div className="alert alert-ok" role="status">
+            {location.state.notice}
+          </div>
+        )}
         {error && (
           <div className="alert alert-error" role="alert">
             {error}
@@ -56,6 +61,9 @@ const Login = () => {
         <button className="btn btn-primary" type="submit">
           Log in
         </button>
+        <p className="faint" style={{ margin: 0 }}>
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </p>
         <p className="faint" style={{ margin: 0 }}>
           New here? <Link to="/register">Create an account</Link>
         </p>

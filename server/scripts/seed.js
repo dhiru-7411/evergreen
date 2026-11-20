@@ -221,7 +221,7 @@ This blog tracks the packages each post depends on and tells you when a post has
 async function upsertUser(username) {
   const email = `${username}@evergreen.dev`;
   let user = await User.findOne({ email });
-  if (!user) user = await User.create({ username, email, password: DEMO_PASSWORD });
+  if (!user) user = await User.create({ username, email, password: DEMO_PASSWORD, emailVerifiedAt: new Date() });
   return user;
 }
 

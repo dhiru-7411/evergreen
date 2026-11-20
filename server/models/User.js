@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema(
     },
     // Admins can create and remove topics.
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    // Set when the user clicks the link in their verification email.
+    emailVerifiedAt: { type: Date, default: null },
   },
   {
     timestamps: true,

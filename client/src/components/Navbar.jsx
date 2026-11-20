@@ -42,6 +42,9 @@ const Navbar = () => {
               <NavLink to={`/u/${user.username}`} className={(a) => `${navClass(a)} hide-sm`}>
                 @{user.username}
               </NavLink>
+              <NavLink to="/account" className={(a) => `${navClass(a)} hide-sm`}>
+                Account
+              </NavLink>
               <button className="btn btn-sm btn-ghost" onClick={handleLogout}>
                 Log out
               </button>

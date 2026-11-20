@@ -21,3 +21,9 @@ services:
         generateValue: true
       - key: CLIENT_URL
         sync: false # your Vercel/Netlify URL, e.g. https://evergreen.vercel.app (checked on every write request)
+      - key: SMTP_URL
+        sync: false # e.g. smtps://LOGIN:KEY@smtp-relay.brevo.com:465 (free tier)
+      - key: MAIL_FROM
+        sync: false # e.g. Evergreen <you@example.com>
+      - key: APP_URL
+        sync: false # public site address for email links, e.g. https://evergreen.vercel.app
