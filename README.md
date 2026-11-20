@@ -84,7 +84,7 @@ Requires Node 20+ and a MongoDB connection string (a free [MongoDB Atlas](https:
 npm run install:all
 
 cp server/.env.example server/.env    # fill in MONGO_URI and JWT_SECRET
-cp client/.env.example client/.env
+cp client/.env.example client/.env    # nothing to fill in; the dev server proxies /api
 
 npm run seed          # optional: demo posts with mixed freshness + an open fix
 npm run dev:server    # http://localhost:5001
@@ -106,7 +106,7 @@ npm test              # API + unit tests against an in-memory MongoDB
 | Piece | Where | Config |
 | --- | --- | --- |
 | API | [Render](https://render.com) (Blueprint) | [`render.yaml`](render.yaml): set `MONGO_URI` and `CLIENT_URL`; `JWT_SECRET` is generated |
-| Client | [Vercel](https://vercel.com) or Netlify, root `client/` | [`client/vercel.json`](client/vercel.json) / [`client/public/_redirects`](client/public/_redirects) handle SPA routes; set `VITE_API_URL` to `https://<your-api>.onrender.com/api` |
+| Client | [Vercel](https://vercel.com) or Netlify, root `client/` | Replace `YOUR-API.onrender.com` in [`client/vercel.json`](client/vercel.json) (or [`client/public/_redirects`](client/public/_redirects)) with your API's host. The site calls `/api` on its own domain and the host forwards it to Render, so login cookies are first-party. Leave `VITE_API_URL` unset. |
 | Database | MongoDB Atlas free tier | Allow Render's outbound IPs (or `0.0.0.0/0` for a demo) |
 
 After the first deploy, run `npm run seed` locally with `MONGO_URI` pointed at Atlas to load the demo posts.

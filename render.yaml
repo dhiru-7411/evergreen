@@ -11,9 +11,13 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 24
+      - key: NODE_ENV
+        value: production # login cookies are Secure (HTTPS-only)
+      - key: TRUST_PROXY
+        value: 2 # browser -> Vercel rewrite -> Render -> app
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: CLIENT_URL
-        sync: false # your Vercel/Netlify URL, e.g. https://evergreen.vercel.app
+        sync: false # your Vercel/Netlify URL, e.g. https://evergreen.vercel.app (checked on every write request)

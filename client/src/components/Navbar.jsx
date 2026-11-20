@@ -10,8 +10,8 @@ const Navbar = () => {
   // Refetch on navigation so the count drops right after a review.
   const { data: inbox } = useFetch(user ? '/fixes/inbox' : null, location.key);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     // Full reload rather than navigate(): router navigations run in a
     // transition, so on a protected page ProtectedRoute would redirect to
     // /login (remembering this page) first. A reload also drops any of the

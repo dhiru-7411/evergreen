@@ -24,7 +24,12 @@ describe('auth', () => {
       .post('/api/auth/login')
       .send({ email: 'alice@example.com', password: 'password123' })
       .expect(200);
-    assert.ok(login.body.token);
+    // Tokens live only in httpOnly cookies, never in the response body.
+    assert.equal(login.body.token, undefined);
+    const cookies = login.headers['set-cookie'].join(' | ');
+    assert.match(cookies, /eg_access=[^;]+; .*HttpOnly/);
+    assert.match(cookies, /eg_refresh=[^;]+; .*Path=\/api\/auth; .*HttpOnly/);
+    assert.match(cookies, /SameSite=Lax/);
 
     const me = await request(app).get('/api/auth/me').set(alice.auth).expect(200);
     assert.equal(me.body.user.username, 'alice');
