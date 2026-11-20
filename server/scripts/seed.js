@@ -227,6 +227,11 @@ async function upsertUser(username) {
 
 async function main() {
   if (!process.env.MONGO_URI) throw new Error('MONGO_URI is not set');
+  // The demo accounts use a password published in the README, and the demo
+  // author is an admin. Never create them on a live site by accident.
+  if (process.env.NODE_ENV === 'production' && !process.argv.includes('--allow-production')) {
+    throw new Error('Refusing to seed demo accounts with NODE_ENV=production (pass --allow-production to override).');
+  }
   await mongoose.connect(process.env.MONGO_URI);
 
   const author = await upsertUser('demo');
