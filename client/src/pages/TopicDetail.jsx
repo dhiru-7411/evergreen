@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { errorMessage } from '../api/axios';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import Resources from '../components/Resources';
@@ -60,6 +61,7 @@ const TopicDetail = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: topic, loading, error, reload } = useFetch(`/topics/${encodeURIComponent(slug)}`, user?.id);
+  usePageMeta(topic ? `Learn ${topic.name}` : null, topic?.summary);
   const [deleteError, setDeleteError] = useState('');
 
   if (loading && !topic) return <Loading />;

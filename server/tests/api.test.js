@@ -124,7 +124,8 @@ describe('posts', () => {
   });
 
   test('invalid ids and unknown routes return clean errors', async () => {
-    await request(app).get('/api/posts/not-an-id').expect(400);
+    // Anything that isn't an id is treated as a readable slug.
+    await request(app).get('/api/posts/not-a-real-post').expect(404);
     await request(app).get('/api/nope').expect(404);
   });
 });

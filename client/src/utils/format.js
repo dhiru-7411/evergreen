@@ -35,3 +35,6 @@ export const plural = (n, word, many = /(s|x|z|ch|sh)$/.test(word) ? `${word}es`
 
 const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 export const compactNumber = (n) => (n == null ? '-' : compact.format(n));
+
+// Readable link to a post (falls back to the id for posts without a slug).
+export const postPath = (post, suffix = '') => `/posts/${post?.slug || post?._id}${suffix}`;

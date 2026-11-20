@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
+import { usePageMeta } from '../hooks/usePageMeta';
 import { useAuth } from '../context/AuthContext';
 import { Loading, ErrorBox, Empty } from '../components/Status';
 import { compactNumber, timeAgo } from '../utils/format';
@@ -24,6 +25,7 @@ const Topics = () => {
   const { user } = useAuth();
   const { data: topics, loading, error } = useFetch('/topics');
   const { data: categories } = useFetch('/topics/categories');
+  usePageMeta("Learn what's current");
 
   return (
     <>

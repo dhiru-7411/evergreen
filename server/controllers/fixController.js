@@ -43,7 +43,7 @@ const inbox = async (req, res) => {
     .sort({ createdAt: -1 })
     .select('-content')
     .populate('proposer', 'username')
-    .populate('post', 'title revision');
+    .populate('post', 'title revision slug');
   res.json(fixes);
 };
 
@@ -51,7 +51,7 @@ const mine = async (req, res) => {
   const fixes = await FixRequest.find({ proposer: req.user.id })
     .sort({ createdAt: -1 })
     .select('-content')
-    .populate('post', 'title revision');
+    .populate('post', 'title revision slug');
   res.json(fixes);
 };
 

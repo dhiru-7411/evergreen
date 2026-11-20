@@ -20,8 +20,7 @@ function getTransport() {
   return transport;
 }
 
-const appUrl = () =>
-  (process.env.APP_URL || (process.env.CLIENT_URL || 'http://localhost:5173').split(',')[0].trim()).replace(/\/$/, '');
+const appUrl = require('../utils/appUrl');
 
 async function send({ to, subject, text }) {
   const message = { from: process.env.MAIL_FROM || 'Evergreen <no-reply@localhost>', to, subject, text };

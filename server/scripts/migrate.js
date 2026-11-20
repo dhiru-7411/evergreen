@@ -11,6 +11,13 @@ const Revision = require('../models/Revision');
 const { refreshPostFreshness } = require('../services/freshnessService');
 
 async function migrate() {
+  // Readable URLs: give every post without one a slug from its title.
+  const unslugged = await Post.find({ slug: { $exists: false } }).select('title');
+  for (const post of unslugged) {
+    await Post.updateOne({ _id: post._id }, { slug: await Post.uniqueSlug(post.title, post._id) });
+  }
+  if (unslugged.length) console.log(`Added readable URLs to ${unslugged.length} post(s).`);
+
   const legacy = await Post.collection.find({ revision: { $exists: false } }).toArray();
 
   for (const doc of legacy) {

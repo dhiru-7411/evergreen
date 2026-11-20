@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { CATEGORY_IDS } = require('../config/categories');
+const { slugify } = require('../utils/slugify');
 
 // Snapshot of one package's live npm data. Kept on the topic so pages still
 // render (with a "last checked" time) if npm is unreachable.
@@ -60,15 +61,7 @@ const topicSchema = new mongoose.Schema(
 topicSchema.index({ category: 1, name: 1 });
 topicSchema.index({ 'live.checkedAt': 1 });
 
-topicSchema.statics.slugify = (name) =>
-  name
-    .toLowerCase()
-    .replace(/\+/g, ' plus ')
-    .replace(/#/g, ' sharp ')
-    .replace(/\./g, '') // Next.js -> nextjs
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
+topicSchema.statics.slugify = (name) => slugify(name);
 
 // Every package the page shows live data for: its own plus the alternatives.
 topicSchema.methods.allPackageNames = function () {
